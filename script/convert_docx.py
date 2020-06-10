@@ -5,6 +5,9 @@ import re
 class convert_docx:
     @staticmethod
     def convert_docx():
+        print('')
+        print('Processing Document')
+
         #open db connection
         db = sqlite3.connect('pmdb')
         cursor = db.cursor()
@@ -210,6 +213,7 @@ class convert_docx:
         db.close()
         
         #save document
+        print('')
         print('Saving Document')
         document.save('preventive_maintenance.docx')
         print('Document has been saved to preventive_maintenance.docx')
