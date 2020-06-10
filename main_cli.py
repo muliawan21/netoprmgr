@@ -278,13 +278,13 @@ class MainCli:
         chg_dir = os.chdir(capture_path)
         current_dir=os.getcwd()
         files = os.listdir(current_dir)
-        print(files)
         for file in files:
             if '__init__.py' in file:
                 pass
             else:
                 try:
                     os.remove(file)
+                    print('Deleting '+str(file))
                 except:
                     pass
 

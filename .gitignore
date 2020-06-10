@@ -7,3 +7,4 @@
 /static/capture/*.TXT
 /static/capture/*.log
 /static/capture/*.zip
+/static/result/logresult
