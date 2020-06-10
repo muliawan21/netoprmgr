@@ -85,6 +85,10 @@ class get_log:
         for enum, logtext in enumerate (list_log):
             write.write(list_hostname[enum]+' | '+logtext+
                         ' | '+list_severity_value[enum]+'\n')
+
+        print('')
+        print('Saving Document')
+        print('Document has been saved to logresult')
 '''           
         #using document docx module
         document = Document()

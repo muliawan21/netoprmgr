@@ -198,6 +198,7 @@ def log_upload():
 			if file and allowed_file_capt(file.filename):
 				filename = secure_filename(file.filename)
 				file.save(os.path.join(app.config['UPLOAD_FOLDER_CAPT'], filename))
+				print('Uploading '+str(file))
 			flash('Logs successfully uploaded')
 		return redirect('/log/upload')
 
