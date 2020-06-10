@@ -3,3 +3,7 @@
 /backup/
 /static/data/devices_data.xlsx
 /static/data/raw_data.xlsx
+/static/capture/*.txt
+/static/capture/*.TXT
+/static/capture/*.log
+/static/capture/*.zip
