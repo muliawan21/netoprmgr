@@ -9,7 +9,9 @@ You can also create virtual environment to use this module.
 	```
 	
 2.	Install requirements
+	```
 	pip install -r requirements.txt
+	```
 
 # Usage
 
@@ -28,9 +30,10 @@ You can also create virtual environment to use this module.
 # Docker
 
 1.	netoprmgr can be pulled from docker
-
+	```
 	docker pull ludesdeveloper/netoprmgr
-
+	```
 2.	Then run docker
-
+	```
 	docker run -d -p 5000:5000 ludesdeveloper/netoprmgr
+	```
