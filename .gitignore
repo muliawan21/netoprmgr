@@ -1,0 +1,5 @@
+*.pyc
+*.docx
+/backup/
+/static/data/devices_data.xlsx
+/static/data/raw_data.xlsx
