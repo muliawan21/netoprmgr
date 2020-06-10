@@ -247,8 +247,11 @@ class MainCli:
         for file in files:
             if file.endswith("db"):
                 os.remove(file)
-        src_mv = (capture_path+'show_log.docx')
-        dst_mv = (result_path+'show_log.docx')
+        #src_mv = (capture_path+'show_log.docx')
+        #dst_mv = (result_path+'show_log.docx')
+        #shutil.move(src_mv,dst_mv)
+        src_mv = (capture_path+'logresult')
+        dst_mv = (result_path+'logresult')
         shutil.move(src_mv,dst_mv)
 
     def createNewReport():

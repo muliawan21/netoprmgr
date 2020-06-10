@@ -10,6 +10,7 @@ class get_log:
     def get_log(self):
         list_hostname = []
         list_log = []
+        list_severity_value = []
         check_log = 'False'
         count_file = 1
         for file in self.files:
@@ -24,6 +25,7 @@ class get_log:
                 for file in read_file_list:
                     if re.findall('^hostname (.*)', file):
                         hostname = re.findall('^hostname (.*)', file)
+                        hostname = hostname[0]
                         break
                 
                 log_break = False
@@ -34,15 +36,23 @@ class get_log:
                         if re.findall('^.*('+month+'\s+\d+\s+\d+:.*-[0,1,2,3,4]-.*)', file):
                             log_break = True
                             log = re.findall('^.*('+month+'\s+\d+\s+\d+:.*-[0,1,2,3,4]-.*)', file)
+                            log = log[0]
+                            severity_value = re.findall('-(\d+)-', file)
+                            severity_value = severity_value[0]
                             list_hostname.append(hostname)
                             list_log.append(log)
+                            list_severity_value.append(severity_value)
                             check_log = 'True'
                         #condition has both month and year
                         elif re.findall('^.*('+month+'\s+\d+\s+'+self.year+'\s+.*-[0,1,2,3,4]-.*)',file):
                             log_break = True
                             log = re.findall('^.*('+month+'\s+\d+\s+'+self.year+'\s+.*-[0,1,2,3,4]-.*)', file)
+                            log = log[0]
+                            severity_value = re.findall('-(\d+)-', file)
+                            severity_value = severity_value[0]
                             list_hostname.append(hostname)
                             list_log.append(log)
+                            list_severity_value.append(severity_value)
                             check_log = 'True'
                         elif re.findall('\S+\s+\d+\s+.*%.*-\d+-',file):
                             log_break = True
@@ -56,6 +66,7 @@ class get_log:
                 if check_log == 'False':
                     list_hostname.append(hostname)
                     list_log.append('-')
+                    list_severity_value.append('-')
                 
                 check_log = 'False'    
 
@@ -65,9 +76,15 @@ class get_log:
                 pass
             count_file+=1 
         
-        write = open('resultlog.txt', 'w')
+        print('')
+        print('Processing Document')
+
+        write = open('logresult', 'w')
+        write.write('Device Name'+' | '+'Log Event'+
+                        ' | '+'Severity Value'+' | '+'Severity'+'\n')
         for enum, logtext in enumerate (list_log):
-            write.write(hostname[enum]+' | '+ logtext)
+            write.write(list_hostname[enum]+' | '+logtext+
+                        ' | '+list_severity_value[enum]+'\n')
 '''           
         #using document docx module
         document = Document()

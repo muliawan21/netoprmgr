@@ -602,8 +602,8 @@ class file_identification:
                     print('Executing None')
                     cisco_None(file)
                     
-            except NameError:
-                raise
-            #except:
-                #pass
+            #except NameError:
+                #raise
+            except:
+                pass
             count_file+=1
