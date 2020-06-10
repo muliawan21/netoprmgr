@@ -1,6 +1,7 @@
 # Local Installation
 
 Python 3.7+ is recommended
+
 You can also create virtual environment to use this module.
 1.	Clone source code from netoprmgr repository
 	```
