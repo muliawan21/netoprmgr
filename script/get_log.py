@@ -47,9 +47,9 @@ class get_log:
                         elif re.findall('\S+\s+\d+\s+.*%.*-\d+-',file):
                             log_break = True
                         #break loop
-                        elif log_break == True and re.findall('.*#',line):
+                        elif log_break == True and re.findall('.*#',file):
                             break
-                        elif log_break == True and re.findall('^\s*$',line):
+                        elif log_break == True and re.findall('^\s*$',file):
                             break
                 
                 #Check if log has not severity below 4
@@ -65,10 +65,14 @@ class get_log:
                 pass
             count_file+=1 
         
-
+        write = open('resultlog.txt', 'w')
+        for enum, logtext in enumerate (list_log):
+            write.write(hostname[enum]+' | '+ logtext)
+'''           
         #using document docx module
         document = Document()
-
+        print('')
+        print('Processing Document')
         #add to document
         p = document.add_paragraph('')
         p.add_run('LOG SUMMARY').bold = True
@@ -89,3 +93,4 @@ class get_log:
         print('Saving Document')
         document.save('show_log.docx')
         print('Document has been saved to show_log.docx')
+'''
