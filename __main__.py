@@ -110,6 +110,19 @@ def login():
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
+@app.route("/template_generate_page")
+@login_required
+def template_generate_page():
+    return render_template('template_generate_page.html')
+
+@app.route('/template_generate/')
+@login_required
+def template_generate():
+	from main_cli import MainCli
+	MainCli.createTemplate()
+	return send_file(DATA_DIR+'/template.xlsx', attachment_filename='template.xlsx', as_attachment=True)
+	#return redirect('/raw_data/upload')
+
 @app.route("/raw_data/upload")
 @login_required
 def raw_data_upload_page():
