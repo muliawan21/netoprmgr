@@ -6,7 +6,7 @@ import urllib.request
 from werkzeug.utils import secure_filename
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
-from flask import Flask, render_template
+from flask import Flask, render_template, send_file
 from flask_login import (login_user, current_user, logout_user,
 						login_required, LoginManager, UserMixin)
 from flask import Flask, flash, request, redirect, render_template
@@ -110,6 +110,19 @@ def login():
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
+@app.route("/template_generate_page")
+@login_required
+def template_generate_page():
+    return render_template('template_generate_page.html')
+
+@app.route('/template_generate/')
+@login_required
+def template_generate():
+	from main_cli import MainCli
+	MainCli.createTemplate()
+	return send_file(DATA_DIR+'/template.xlsx', attachment_filename='template.xlsx', as_attachment=True)
+	#return redirect('/raw_data/upload')
+
 @app.route("/raw_data/upload")
 @login_required
 def raw_data_upload_page():
@@ -128,10 +141,11 @@ def raw_data_upload():
 			flash('No file selected for uploading')
 			return redirect(request.url)
 		if file and allowed_file_data(file.filename):
-			filename = secure_filename(file.filename)
-			file.save(os.path.join(app.config['UPLOAD_FOLDER_DATA'], filename))
+			#filename = secure_filename(file.filename)
+			#file.save(os.path.join(app.config['UPLOAD_FOLDER_DATA'], filename))
+			file.save(os.path.join(app.config['UPLOAD_FOLDER_DATA'], 'raw_data.xlsx'))
 			flash('File successfully uploaded')
-			return redirect('/raw_data/result')
+			return redirect('/generate_device_data_page')
 		else:
 			flash('Allowed file type is xlsx')
 			return redirect(request.url)
@@ -140,6 +154,11 @@ def raw_data_upload():
 @login_required
 def raw_download():
 	return render_template('raw_data_download.html')
+
+@app.route('/generate_device_data_page')
+@login_required
+def generate_device_data_page():
+	return render_template('generate_device_data_page.html')
 
 @app.route('/generate_device_data')
 @login_required
@@ -166,8 +185,9 @@ def device_data_upload():
 			flash('No file selected for uploading')
 			return redirect(request.url)
 		if file and allowed_file_data(file.filename):
-			filename = secure_filename(file.filename)
-			file.save(os.path.join(app.config['UPLOAD_FOLDER_DATA'], filename))
+			#filename = secure_filename(file.filename)
+			#file.save(os.path.join(app.config['UPLOAD_FOLDER_DATA'], filename))
+			file.save(os.path.join(app.config['UPLOAD_FOLDER_DATA'], 'devices_data.xlsx'))
 			flash('File successfully uploaded')
 			return redirect('/device_data/result')
 		else:

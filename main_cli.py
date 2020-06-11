@@ -272,7 +272,7 @@ class MainCli:
 
     def createTemplate():
         chg_dir = os.chdir(data_path)
-        create_data_template=create_data_template()
+        function_create_data_template=create_data_template()
 
     def deleteCapture():
         chg_dir = os.chdir(capture_path)
@@ -325,3 +325,5 @@ if __name__ == "__main__":
         MainCli.showLog()
     elif answer == 'web':
         MainCli.webAccess()
+    elif answer == 'template':
+        MainCli.createTemplate()
