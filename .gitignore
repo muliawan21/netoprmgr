@@ -8,3 +8,4 @@
 /static/capture/*.log
 /static/capture/*.zip
 /static/result/logresult
+/static/data/template.xlsx
