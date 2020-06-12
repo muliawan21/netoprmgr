@@ -232,380 +232,385 @@ class file_identification:
                 print('File '+str(count_file)+' of '+str(len(self.files)))
                 print('Processing File :')
                 print(file)
-                try:
-                    read_file = open(file, 'r')
-                    read_file_list = read_file.readlines()
-                except:
-                    read_file = open(file, 'r', encoding='latin-1')
-                    read_file_list = read_file.readlines()
+                if '__init__.py' in file:
+                    pass
+                elif 'pmdb' in file:
+                    pass
+                else:
+                    try:
+                        read_file = open(file, 'r')
+                        read_file_list = read_file.readlines()
+                    except:
+                        read_file = open(file, 'r', encoding='latin-1')
+                        read_file_list = read_file.readlines()
                 
-                for i in read_file_list:
-                    if re.findall('.*PID:.*C3750X',i):
-                        print('Execute cisco_C3750X')
-                        cisco_C3750X(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*DESCR:.*C4500X',i):
-                        print('Execute cisco_C4500X')
-                        cisco_C4500X(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*C4506',i):
-                        print('Execute cisco_C4506')
-                        cisco_C4506(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('^PID:\s+\S+4507R[+]E',i):
-                        print('Execute cisco_C4507RE')
-                        cisco_C4507RE(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*C4507R',i):
-                        print('Execute cisco_C4507R')
-                        cisco_C4507R(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*DESCR:.*C4900M',i):
-                        print('Execute cisco_C4900M')
-                        cisco_C4900M(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*C6504',i):
-                        print('Execute cisco_C6504')
-                        cisco_C6504(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*C6506',i):
-                        print('Execute cisco_C6506')
-                        cisco_C6506(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+2960CX',i):
-                        print ('Executing with C2960CX')
-                        cisco_C2960CX(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+2960C',i):
-                        print ('Executing with C2960C')
-                        cisco_C2960C(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+2960L',i):
-                        print ('Executing with C2960L')
-                        cisco_C2960L(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+2960S',i):
-                        print ('Executing with C2960S')
-                        cisco_C2960S(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+2960XR',i):
-                        print ('Executing with C2960XR')
-                        cisco_C2960XR(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+2960X',i):
-                        print ('Executing with C2960X')
-                        cisco_C2960X(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+2960',i):
-                        print ('Executing with C2960')
-                        cisco_C2960(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+3560CG',i):
-                        print ('Executing with C3560CG')
-                        cisco_C3560CG(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+3560CX',i):
-                        print ('Executing with C3560CX')
-                        cisco_C3560CX(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+3560C',i):
-                        print ('Executing with C3560C')
-                        cisco_C3560C(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+3560G',i):
-                        print ('Executing with C3560G')
-                        cisco_C3560G(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+3560V2',i):
-                        print ('Executing with C3560V2')
-                        cisco_C3560V2(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+3560X',i):
-                        print ('Executing with C3560X')
-                        cisco_C3560X(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+3560',i):
-                        print ('Executing with C3560')
-                        cisco_C3560(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+C3650',i):
-                        print ('Executing with C3650')
-                        cisco_C3650(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+3750E',i):
-                        print ('Executing with C3750E')
-                        cisco_C3750E(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+3750G',i):
-                        print ('Executing with C3750G')
-                        cisco_C3750G(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+3750V2',i):
-                        print ('Executing with C3750V2')
-                        cisco_C3750V2(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+3850-\d+P',i):
-                        print ('Executing with C3850P')
-                        cisco_C3850P(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+3850-\d+S-S',i):
-                        print ('Executing with C3850S_S')
-                        cisco_C3850S_S(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+3850-\d+S',i):
-                        print ('Executing with C3850S')
-                        cisco_C3850S(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+3850-\d+TS',i):
-                        print ('Executing with C3850TS')
-                        cisco_C3850TS(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+3850-\d+T-S',i):
-                        print ('Executing with C3850T_S')
-                        cisco_C3850T_S(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+3850-\d+T',i):
-                        print ('Executing with C3850T')
-                        cisco_C3850T(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+3850-\d+XS-S',i):
-                        print ('Executing with C3850XS_S')
-                        cisco_C3850XS_S(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+\S+3850-\d+XS',i):
-                        print ('Executing with C3850XS')
-                        cisco_C3850XS(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*C6509',i):
-                        print('Executing with C6509')
-                        cisco_C6509(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*C6513',i):
-                        print('Executing with C6513')
-                        cisco_C6513(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*C6807',i):
-                        print('Executing with C6807')
-                        cisco_C6807(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*C6880',i):
-                        print('Executing with C6880')
-                        cisco_C6880(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*C9200L',i):
-                        print('Executing with C9200L')
-                        cisco_C9200L(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*C9300',i):
-                        print('Executing with C9300')
-                        cisco_C9300(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*C9500',i):
-                        print('Executing with C9500')
-                        cisco_C9500(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*CISCO2921',i):
-                        print('Executing with CISCO2921')
-                        cisco_2921(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*CISCO2951',i):
-                        print('Executing with CISCO2951')
-                        cisco_2951(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*CISCO3825',i):
-                        print('Executing with CISCO3825')
-                        cisco_3825(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*CISCO3845',i):
-                        print('Executing with CISCO3845')
-                        cisco_3845(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*CISCO3925',i):
-                        print('Executing with CISCO3925')
-                        cisco_3925(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*CISCO3945',i):
-                        print('Executing with CISCO3945')
-                        cisco_3945(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*ASA5505',i):
-                        print('Executing with ASA5505')
-                        cisco_ASA5505(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*ASA5508',i):
-                        print('Executing with ASA5508')
-                        cisco_ASA5508(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+CISCO1905',i):
-                        print('Executing with 1905')
-                        cisco_1905(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+CISCO1921',i):
-                        print('Executing with 1921')
-                        cisco_1921(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+CISCO1941',i):
-                        print('Executing with 1941')
-                        cisco_1941(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+CISCO2801',i):
-                        print('Executing with 2801')
-                        cisco_2801(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+CISCO2811',i):
-                        print('Executing with 2811')
-                        cisco_2811(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+CISCO2821',i):
-                        print('Executing with 2821')
-                        cisco_2821(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+CISCO2901',i):
-                        print('Executing with 2901')
-                        cisco_2901(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:\s+CISCO2911',i):
-                        print('Executing with 2911')
-                        cisco_2911(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*ASA5512',i):
-                        print('Executing with ASA5512')
-                        cisco_ASA5512(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*ASA5515',i):
-                        print('Executing with ASA5515')
-                        cisco_ASA5515(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*ASA5520',i):
-                        print('Executing with ASA5520')
-                        cisco_ASA5520(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*ISR4451',i):
-                        print('Executing with ISR4451')
-                        cisco_ISR4451(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*ISR4331',i):
-                        print('Executing with ISR4331')
-                        cisco_ISR4331(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*ISR4351',i):
-                        print('Executing with ISR4351')
-                        cisco_ISR4351(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*ISR4321',i):
-                        print('Executing with ISR4321')
-                        cisco_ISR4321(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*ASR1002',i):
-                        print('Executing with ASR1002')
-                        cisco_ASR1002(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*ASA5585',i):
-                        print('Executing with ASA5585')
-                        cisco_ASA5585(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*A9K-RSP440-TR',i):
-                        print('Executing with ASR9010')
-                        cisco_ASR9010(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*ASR-902',i):
-                        print('Executing with ASR902')
-                        cisco_ASR902(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*ISR4431\S+',i):
-                        print('Executing with ISR4431')
-                        cisco_ISR4431(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('PID:\s+N9K-C93180YC-EX',i):
-                        print('Executing with N9K-C93180YC-EX')
-                        cisco_N9K_C93180YC_EX(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*N7K-C7009',i):
-                        print('Executing with N7K-C7009')
-                        cisco_N7K_C7009(file)
-                        xcek='disable'
-                        break
-                    elif re.findall('.*PID:.*N7K-C7010',i):
-                        print('Executing with N7K-C7010')
-                        cisco_N7K_C7010(file)
-                        xcek='disable'
-                        break
-                    else:
-                        xcek='enable'
-                    
-                if xcek=='enable':
-                    print('Executing None')
-                    cisco_None(file)
+                    for i in read_file_list:
+                        if re.findall('.*PID:.*C3750X',i):
+                            print('Execute cisco_C3750X')
+                            cisco_C3750X(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*DESCR:.*C4500X',i):
+                            print('Execute cisco_C4500X')
+                            cisco_C4500X(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*C4506',i):
+                            print('Execute cisco_C4506')
+                            cisco_C4506(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('^PID:\s+\S+4507R[+]E',i):
+                            print('Execute cisco_C4507RE')
+                            cisco_C4507RE(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*C4507R',i):
+                            print('Execute cisco_C4507R')
+                            cisco_C4507R(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*DESCR:.*C4900M',i):
+                            print('Execute cisco_C4900M')
+                            cisco_C4900M(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*C6504',i):
+                            print('Execute cisco_C6504')
+                            cisco_C6504(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*C6506',i):
+                            print('Execute cisco_C6506')
+                            cisco_C6506(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+2960CX',i):
+                            print ('Executing with C2960CX')
+                            cisco_C2960CX(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+2960C',i):
+                            print ('Executing with C2960C')
+                            cisco_C2960C(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+2960L',i):
+                            print ('Executing with C2960L')
+                            cisco_C2960L(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+2960S',i):
+                            print ('Executing with C2960S')
+                            cisco_C2960S(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+2960XR',i):
+                            print ('Executing with C2960XR')
+                            cisco_C2960XR(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+2960X',i):
+                            print ('Executing with C2960X')
+                            cisco_C2960X(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+2960',i):
+                            print ('Executing with C2960')
+                            cisco_C2960(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+3560CG',i):
+                            print ('Executing with C3560CG')
+                            cisco_C3560CG(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+3560CX',i):
+                            print ('Executing with C3560CX')
+                            cisco_C3560CX(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+3560C',i):
+                            print ('Executing with C3560C')
+                            cisco_C3560C(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+3560G',i):
+                            print ('Executing with C3560G')
+                            cisco_C3560G(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+3560V2',i):
+                            print ('Executing with C3560V2')
+                            cisco_C3560V2(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+3560X',i):
+                            print ('Executing with C3560X')
+                            cisco_C3560X(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+3560',i):
+                            print ('Executing with C3560')
+                            cisco_C3560(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+C3650',i):
+                            print ('Executing with C3650')
+                            cisco_C3650(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+3750E',i):
+                            print ('Executing with C3750E')
+                            cisco_C3750E(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+3750G',i):
+                            print ('Executing with C3750G')
+                            cisco_C3750G(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+3750V2',i):
+                            print ('Executing with C3750V2')
+                            cisco_C3750V2(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+3850-\d+P',i):
+                            print ('Executing with C3850P')
+                            cisco_C3850P(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+3850-\d+S-S',i):
+                            print ('Executing with C3850S_S')
+                            cisco_C3850S_S(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+3850-\d+S',i):
+                            print ('Executing with C3850S')
+                            cisco_C3850S(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+3850-\d+TS',i):
+                            print ('Executing with C3850TS')
+                            cisco_C3850TS(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+3850-\d+T-S',i):
+                            print ('Executing with C3850T_S')
+                            cisco_C3850T_S(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+3850-\d+T',i):
+                            print ('Executing with C3850T')
+                            cisco_C3850T(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+3850-\d+XS-S',i):
+                            print ('Executing with C3850XS_S')
+                            cisco_C3850XS_S(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+\S+3850-\d+XS',i):
+                            print ('Executing with C3850XS')
+                            cisco_C3850XS(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*C6509',i):
+                            print('Executing with C6509')
+                            cisco_C6509(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*C6513',i):
+                            print('Executing with C6513')
+                            cisco_C6513(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*C6807',i):
+                            print('Executing with C6807')
+                            cisco_C6807(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*C6880',i):
+                            print('Executing with C6880')
+                            cisco_C6880(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*C9200L',i):
+                            print('Executing with C9200L')
+                            cisco_C9200L(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*C9300',i):
+                            print('Executing with C9300')
+                            cisco_C9300(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*C9500',i):
+                            print('Executing with C9500')
+                            cisco_C9500(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*CISCO2921',i):
+                            print('Executing with CISCO2921')
+                            cisco_2921(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*CISCO2951',i):
+                            print('Executing with CISCO2951')
+                            cisco_2951(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*CISCO3825',i):
+                            print('Executing with CISCO3825')
+                            cisco_3825(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*CISCO3845',i):
+                            print('Executing with CISCO3845')
+                            cisco_3845(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*CISCO3925',i):
+                            print('Executing with CISCO3925')
+                            cisco_3925(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*CISCO3945',i):
+                            print('Executing with CISCO3945')
+                            cisco_3945(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*ASA5505',i):
+                            print('Executing with ASA5505')
+                            cisco_ASA5505(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*ASA5508',i):
+                            print('Executing with ASA5508')
+                            cisco_ASA5508(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+CISCO1905',i):
+                            print('Executing with 1905')
+                            cisco_1905(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+CISCO1921',i):
+                            print('Executing with 1921')
+                            cisco_1921(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+CISCO1941',i):
+                            print('Executing with 1941')
+                            cisco_1941(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+CISCO2801',i):
+                            print('Executing with 2801')
+                            cisco_2801(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+CISCO2811',i):
+                            print('Executing with 2811')
+                            cisco_2811(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+CISCO2821',i):
+                            print('Executing with 2821')
+                            cisco_2821(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+CISCO2901',i):
+                            print('Executing with 2901')
+                            cisco_2901(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+CISCO2911',i):
+                            print('Executing with 2911')
+                            cisco_2911(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*ASA5512',i):
+                            print('Executing with ASA5512')
+                            cisco_ASA5512(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*ASA5515',i):
+                            print('Executing with ASA5515')
+                            cisco_ASA5515(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*ASA5520',i):
+                            print('Executing with ASA5520')
+                            cisco_ASA5520(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*ISR4451',i):
+                            print('Executing with ISR4451')
+                            cisco_ISR4451(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*ISR4331',i):
+                            print('Executing with ISR4331')
+                            cisco_ISR4331(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*ISR4351',i):
+                            print('Executing with ISR4351')
+                            cisco_ISR4351(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*ISR4321',i):
+                            print('Executing with ISR4321')
+                            cisco_ISR4321(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*ASR1002',i):
+                            print('Executing with ASR1002')
+                            cisco_ASR1002(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*ASA5585',i):
+                            print('Executing with ASA5585')
+                            cisco_ASA5585(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*A9K-RSP440-TR',i):
+                            print('Executing with ASR9010')
+                            cisco_ASR9010(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*ASR-902',i):
+                            print('Executing with ASR902')
+                            cisco_ASR902(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*ISR4431\S+',i):
+                            print('Executing with ISR4431')
+                            cisco_ISR4431(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('PID:\s+N9K-C93180YC-EX',i):
+                            print('Executing with N9K-C93180YC-EX')
+                            cisco_N9K_C93180YC_EX(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*N7K-C7009',i):
+                            print('Executing with N7K-C7009')
+                            cisco_N7K_C7009(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*N7K-C7010',i):
+                            print('Executing with N7K-C7010')
+                            cisco_N7K_C7010(file)
+                            xcek='disable'
+                            break
+                        else:
+                            xcek='enable'
+                        
+                    if xcek=='enable':
+                        print('Executing None')
+                        cisco_None(file)
                     
             #except NameError:
                 #raise

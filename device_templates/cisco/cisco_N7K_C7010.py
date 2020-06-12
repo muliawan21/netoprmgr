@@ -104,13 +104,13 @@ class cisco_N7K_C7010:
         for line in read_file_list:
             #MEMORY
             #Memory Total
-            if re.findall('^Processor Pool Total:(.*)Used:.*Free:.*',line):
+            if re.findall('^Memory usage:\s+(\d+)',line):
                 memory_break = True
-                memory_total = re.findall('^Processor Pool Total:(.*)Used:.*Free:.*',line)
+                memory_total = re.findall('^Memory usage:\s+(\d+)',line)
                 memory_total = memory_total[0]
             #Memory Used
-            if re.findall('^Processor Pool Total:.*Used:(.*)Free:.*',line):
-                memory_used = re.findall('^Processor Pool Total:.*Used:(.*)Free:.*',line)
+            if re.findall('^Memory usage:\s+\d+.*total,\s+(\d+)',line):
+                memory_used = re.findall('^Memory usage:\s+\d+.*total,\s+(\d+)',line)
                 memory_used = memory_used[0]
                 #memory percentage
                 memory_percentage = (int(memory_used)/int(memory_total))*100
@@ -126,6 +126,8 @@ class cisco_N7K_C7010:
             #break loop
             if memory_break == True and re.findall('.*#',line):
                 break
+
+
         #sorting memory
         list_memory = []
         list_memory_sorted = []
@@ -133,12 +135,12 @@ class cisco_N7K_C7010:
         memory_sorted_add_list = False
         for line in read_file_list:
             #make conditional statement to let program start append to list, and get ready to break loop
-            if re.findall('.*PID\s+TTY\s+Allocated\s+Freed\s+Holding\s+Getbufs\s+Retbufs\s+Process',line):
+            if re.findall('.*PID\s+MemAlloc\s+MemLimit\s+MemUsed\s+StackBase\/Ptr\s+Process',line):
                 memory_sorted_break = True
                 memory_sorted_add_list = True
             #append value to list
             if memory_sorted_break == True:
-                if re.findall('.*PID\s+TTY\s+Allocated\s+Freed\s+Holding\s+Getbufs\s+Retbufs\s+Process',line):
+                if re.findall('.*PID\s+MemAlloc\s+MemLimit\s+MemUsed\s+StackBase\/Ptr\s+Process',line):
                     pass
                 else:
                     list_memory.append(line)
@@ -152,8 +154,8 @@ class cisco_N7K_C7010:
             try:
                 
                 
-                sort_digit = re.findall('\d+\s+\d+\s+\d+\s+\d+\s+(\d+)\s+\d+\s+\d+\s+.*',i)
-                sort_text =  re.findall('\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+(.*)',i)
+                sort_digit = re.findall('\d+\s+\d+\s+\d+\s+(\d+)\s+\S+\/\S+\s+.*',i)
+                sort_text =  re.findall('\d+\s+\d+\s+\d+\s+\d+\s+\S+\/\S+\s+(.*)',i)
                 list_memory_sorted.append(sort_digit[0]+' '+sort_text[0])
             except:
                 pass
