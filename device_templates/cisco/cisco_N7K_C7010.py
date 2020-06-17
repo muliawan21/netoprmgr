@@ -225,17 +225,6 @@ class cisco_N7K_C7010:
                 read_file_logic_check = True
             count_read_file+=1
 
-        read_file_list_env  = []
-        read_file_logic_check = False
-        count_read_file = 0
-        for line in read_file_list:
-            read_file_list_env.append(line)
-            if read_file_logic_check == True and 'show' in line:
-                break
-            if 'show env' in line and '%' not in read_file_list[count_read_file+1] and '%' not in read_file_list[count_read_file+2]:
-                read_file_logic_check = True
-            count_read_file+=1
-
         #get environment
         list_psu_capture = []
         list_fan = []
@@ -248,34 +237,34 @@ class cisco_N7K_C7010:
         psu_line_end = 0
         count_line=0
         for i in read_file_list_env:
-            if re.findall('^.*(Fan1.*)\s+N7K-\S+\s+\d+.\d+\s+Ok',i):
-                regex_fan = re.findall('^.*(Fan1.*)\s+N7K-\S+\s+\d+.\d+\s+Ok',i)
+            if re.findall('^.*(Fan1.*)\s+N7K-\S+\s+\d+.\d+\s+.*',i):
+                regex_fan = re.findall('^.*(Fan1.*)\s+N7K-\S+\s+\d+.\d+\s+.*',i)
                 #tulis = input(i)
                 fan = regex_fan[0]
                 list_fan.append(fan)
                 #print(fan)
-            if re.findall('^.*Fan1.*\s+N7K-\S+\s+\d+.\d+\s+(Ok)', i):
-                regex_fan_cond = re.findall('^.*Fan1.*\s+N7K-\S+\s+\d+.\d+\s+(Ok)', i)
+            if re.findall('^.*Fan1.*\s+N7K-\S+\s+\d+.\d+\s+(.*)', i):
+                regex_fan_cond = re.findall('^.*Fan1.*\s+N7K-\S+\s+\d+.\d+\s+(.*)', i)
                 fan_cond = regex_fan_cond[0]
                 list_fan_cond_cp.append(fan_cond)
                 #print(fan_cond)
-            if re.findall('^.*(CPU\d+CORE\d+\S+)\s+\d+\s+\d+\s+\d+\s+Ok',i):
-                regex_temp = re.findall('^.*(CPU\d+CORE\d+\S+)\s+\d+\s+\d+\s+\d+\s+Ok',i)
+            if re.findall('^.*(CPU\d+CORE\d+\S+)\s+\d+\s+\d+\s+\d+\s+.*',i):
+                regex_temp = re.findall('^.*(CPU\d+CORE\d+\S+)\s+\d+\s+\d+\s+\d+\s+.*',i)
                 temp = regex_temp[0]
                 list_temp.append(temp)
                 #print(temp)
-            if re.findall('^.*CPU\d+CORE\d+\S+\s+\d+\s+\d+\s+\d+\s+(Ok)', i):
-                regex_temp_cond = re.findall('^.*CPU\d+CORE\d+\S+\s+\d+\s+\d+\s+\d+\s+(Ok)', i)
+            if re.findall('^.*CPU\d+CORE\d+\S+\s+\d+\s+\d+\s+\d+\s+(.*)', i):
+                regex_temp_cond = re.findall('^.*CPU\d+CORE\d+\S+\s+\d+\s+\d+\s+\d+\s+(.*)', i)
                 temp_cond = regex_temp_cond[0]
                 list_temp_cond.append(temp_cond)
                 #print(temp_cond)
-            if re.findall('^.*(\d+)\s+N7K-\S+-\d+.\d+\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+Ok',i):
-                regex_psu = re.findall('^.*(\d+)\s+N7K-\S+-\d+.\d+\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+Ok',i)
+            if re.findall('^.*(\d+)\s+N7K-\S+-\d+.\d+\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+.*',i):
+                regex_psu = re.findall('^.*(\d+)\s+N7K-\S+-\d+.\d+\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+.*',i)
                 psu = regex_psu[0]
                 list_psu.append(psu)
                 #print(psu)
-            if re.findall('^.*\d+\s+N7K-\S+-\d+.\d+\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+(Ok)', i):
-                regex_psu_cond = re.findall('^.*\d+\s+N7K-\S+-\d+.\d+\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+(Ok)', i)
+            if re.findall('^.*\d+\s+N7K-\S+-\d+.\d+\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+(.*)', i):
+                regex_psu_cond = re.findall('^.*\d+\s+N7K-\S+-\d+.\d+\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+(.*)', i)
                 psu_cond = regex_psu_cond[0]
                 list_psu_cond.append(psu_cond)
                 #print(psu_cond)
