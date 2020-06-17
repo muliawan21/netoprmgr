@@ -3,7 +3,7 @@ import re
 
 
 
-class cisco_N7K_C7009:
+class cisco_VG224:
     def __init__(self,file):
         #variable constructor
         self.file = file
@@ -19,14 +19,14 @@ class cisco_N7K_C7009:
                 break
         for line in read_file_list:
             #get device model
-            if re.findall('^.*cisco Nexus\d+\s+(\S+\d+)',line):
-                model = re.findall('^.*cisco Nexus\d+\s+(\S+\d+)',line)
+            if re.findall('.*isco\s+(\S+).*with.*bytes',line):
+                model = re.findall('.*isco\s+(\S+).*with.*bytes',line)
                 model = model[0]
                 break                
         for line in read_file_list:
             #get ios version
-            if re.findall('^.*system image file is:\s+(\S+.bin)',line):
-                iosversion = re.findall('^.*system image file is:\s+(\S+.bin)',line)
+            if re.findall('^System image file is "(.*)"',line):
+                iosversion = re.findall('^System image file is "(.*)"',line)
                 iosversion = iosversion[0]
                 break
         for line in read_file_list:
@@ -35,14 +35,16 @@ class cisco_N7K_C7009:
                 uptime = re.findall('^.*uptime is (.*)',line)
                 uptime = uptime[0]
                 break
-
-        #get configuration register
-        confreg = '-'
-
+        for line in read_file_list:
+            #get configuration register
+            if re.findall('^Configuration register is (.*)',line):
+                confreg = re.findall('^Configuration register is (.*)',line)
+                confreg = confreg[0]
+                break
         for line in read_file_list:
             #SOFTWARE TABLE SUMMARY
-            if re.findall('^.*system:\s+version\s+(\d+.\d+\S+)',line):
-                version = re.findall('^.*system:\s+version\s+(\d+.\d+\S+)',line)
+            if re.findall('^.*Version (.*),',line):
+                version = re.findall('^.*Version (.*),',line)
                 version = version[0]
                 break
         
@@ -104,13 +106,13 @@ class cisco_N7K_C7009:
         for line in read_file_list:
             #MEMORY
             #Memory Total
-            if re.findall('^Memory usage:\s+(\d+)',line):
+            if re.findall('^Processor Pool Total:(.*)Used:.*Free:.*',line):
                 memory_break = True
-                memory_total = re.findall('^Memory usage:\s+(\d+)',line)
+                memory_total = re.findall('^Processor Pool Total:(.*)Used:.*Free:.*',line)
                 memory_total = memory_total[0]
             #Memory Used
-            if re.findall('^Memory usage:\s+\d+.*total,\s+(\d+)',line):
-                memory_used = re.findall('^Memory usage:\s+\d+.*total,\s+(\d+)',line)
+            if re.findall('^Processor Pool Total:.*Used:(.*)Free:.*',line):
+                memory_used = re.findall('^Processor Pool Total:.*Used:(.*)Free:.*',line)
                 memory_used = memory_used[0]
                 #memory percentage
                 memory_percentage = (int(memory_used)/int(memory_total))*100
@@ -126,8 +128,6 @@ class cisco_N7K_C7009:
             #break loop
             if memory_break == True and re.findall('.*#',line):
                 break
-
-
         #sorting memory
         list_memory = []
         list_memory_sorted = []
@@ -135,12 +135,12 @@ class cisco_N7K_C7009:
         memory_sorted_add_list = False
         for line in read_file_list:
             #make conditional statement to let program start append to list, and get ready to break loop
-            if re.findall('.*PID\s+MemAlloc\s+MemLimit\s+MemUsed\s+StackBase\/Ptr\s+Process',line):
+            if re.findall('.*PID\s+TTY\s+Allocated\s+Freed\s+Holding\s+Getbufs\s+Retbufs\s+Process',line):
                 memory_sorted_break = True
                 memory_sorted_add_list = True
             #append value to list
             if memory_sorted_break == True:
-                if re.findall('.*PID\s+MemAlloc\s+MemLimit\s+MemUsed\s+StackBase\/Ptr\s+Process',line):
+                if re.findall('.*PID\s+TTY\s+Allocated\s+Freed\s+Holding\s+Getbufs\s+Retbufs\s+Process',line):
                     pass
                 else:
                     list_memory.append(line)
@@ -154,8 +154,8 @@ class cisco_N7K_C7009:
             try:
                 
                 
-                sort_digit = re.findall('\d+\s+\d+\s+\d+\s+(\d+)\s+\S+\/\S+\s+.*',i)
-                sort_text =  re.findall('\d+\s+\d+\s+\d+\s+\d+\s+\S+\/\S+\s+(.*)',i)
+                sort_digit = re.findall('\d+\s+\d+\s+\d+\s+\d+\s+(\d+)\s+\d+\s+\d+\s+.*',i)
+                sort_text =  re.findall('\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+(.*)',i)
                 list_memory_sorted.append(sort_digit[0]+' '+sort_text[0])
             except:
                 pass
@@ -197,8 +197,8 @@ class cisco_N7K_C7009:
             try:
                 
                 
-                sort_digit = re.findall('\d+\s+\d+\s+\d+\s+\d+\s+(\d+.\d+)%\s+\S+\s+\S+\s+-\s+.*',i)
-                sort_text =  re.findall('\d+\s+\d+\s+\d+\s+\d+\s+\d+.\d+%\s+\S+\s+\S+\s+-\s+(.*)',i)
+                sort_digit = re.findall('\d+\s+\d+\s+\d+\s+\d+\s+(\d+[.]\d+).*\d+[.]\d+.*\d+[.]\d+.*\d+\s+.*',i)
+                sort_text =  re.findall('\d+\s+\d+\s+\d+\s+\d+\s+\d+[.]\d+.*\d+[.]\d+.*\d+[.]\d+.*\d+\s+(.*)',i)
                 list_cpu_sorted.append(sort_digit[0]+' '+sort_text[0])
             except:
                 pass
@@ -225,17 +225,6 @@ class cisco_N7K_C7009:
                 read_file_logic_check = True
             count_read_file+=1
 
-        read_file_list_env  = []
-        read_file_logic_check = False
-        count_read_file = 0
-        for line in read_file_list:
-            read_file_list_env.append(line)
-            if read_file_logic_check == True and 'show' in line:
-                break
-            if 'show env' in line and '%' not in read_file_list[count_read_file+1] and '%' not in read_file_list[count_read_file+2]:
-                read_file_logic_check = True
-            count_read_file+=1
-
         #get environment
         list_psu_capture = []
         list_fan = []
@@ -248,38 +237,41 @@ class cisco_N7K_C7009:
         psu_line_end = 0
         count_line=0
         for i in read_file_list_env:
-            if re.findall('^.*(Fan1.*)\s+N7K-\S+\s+\d+.\d+\s+.*',i):
-                regex_fan = re.findall('^.*(Fan1.*)\s+N7K-\S+\s+\d+.\d+\s+.*',i)
-                #tulis = input(i)
+            if re.findall('^.*(Fan)\s+status:',i):
+                regex_fan = re.findall('^.*(Fan)\s+status:',i)
                 fan = regex_fan[0]
                 list_fan.append(fan)
                 #print(fan)
-            if re.findall('^.*Fan1.*\s+N7K-\S+\s+\d+.\d+\s+(.*)', i):
-                regex_fan_cond = re.findall('^.*Fan1.*\s+N7K-\S+\s+\d+.\d+\s+(.*)', i)
-                fan_cond = regex_fan_cond[0]
+            if 'Fan status:' in i:
+                fan_cond = read_file_list_env[count_line+2]
+                fan_cond = re.findall('^\s+(.*).', fan_cond)
+                fan_cond = fan_cond[0]
                 list_fan_cond_cp.append(fan_cond)
-                #print(fan_cond)
-            if re.findall('^.*(CPU\d+CORE\d+\S+)\s+\d+\s+\d+\s+\d+\s+.*',i):
-                regex_temp = re.findall('^.*(CPU\d+CORE\d+\S+)\s+\d+\s+\d+\s+\d+\s+.*',i)
+                #tulis = input(fan_cond)
+            if re.findall('^.*Board\s+(Temperature):',i):
+                regex_temp = re.findall('^.*Board\s+(Temperature):',i)
                 temp = regex_temp[0]
                 list_temp.append(temp)
-                #print(temp)
-            if re.findall('^.*CPU\d+CORE\d+\S+\s+\d+\s+\d+\s+\d+\s+(.*)', i):
-                regex_temp_cond = re.findall('^.*CPU\d+CORE\d+\S+\s+\d+\s+\d+\s+\d+\s+(.*)', i)
-                temp_cond = regex_temp_cond[0]
+                #tulis = input(temp)
+            if 'Board Temperature:' in i:
+                temp_cond = read_file_list_env[count_line+2]
+                temp_cond = re.findall('^\s+(.*).', temp_cond)
+                temp_cond = temp_cond[0]
                 list_temp_cond.append(temp_cond)
-                #print(temp_cond)
-            if re.findall('^.*(\d+)\s+N7K-\S+-\d+.\d+\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+.*',i):
-                regex_psu = re.findall('^.*(\d+)\s+N7K-\S+-\d+.\d+\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+.*',i)
-                psu = regex_psu[0]
+                #tulis = input(temp_cond)
+            if 'Misc. status:' in i:
+                psu = read_file_list_env[count_line+2]
+                psu = re.findall('^.*\s+Main\s+(Power Supply)\s.*.', psu)
+                psu = psu[0]
                 list_psu.append(psu)
-                #print(psu)
-            if re.findall('^.*\d+\s+N7K-\S+-\d+.\d+\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+(.*)', i):
-                regex_psu_cond = re.findall('^.*\d+\s+N7K-\S+-\d+.\d+\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+(.*)', i)
-                psu_cond = regex_psu_cond[0]
+                #tulis = input(psu)
+            if 'Misc. status:' in i:
+                psu_cond = read_file_list_env[count_line+2]
+                psu_cond = re.findall('^.*\s+Main\s+Power Supply\s(.*).', psu_cond)
+                psu_cond = psu_cond[0]
                 list_psu_cond.append(psu_cond)
-                #print(psu_cond)
-
+                #tulis = input(psu_cond)
+            count_line+=1
         #open db connection
         db = sqlite3.connect('pmdb')
         cursor = db.cursor()
@@ -339,7 +331,7 @@ class cisco_N7K_C7009:
             count_sql = 0
             for psu in list_psu:
                 cursor.execute('''INSERT INTO envtable(devicename, system, item, status)
-                        VALUES(?,?,?,?)''', (self.file+'-'+'error','Power Supply',self.file+'-'+'error',self.file+'-'+'error',))
+                        VALUES(?,?,?,?)''', (self.file+'-'+'error','Power Supply',self.file+'-'+'error',))
                 count_sql+=1
         try:
             count_sql = 0
@@ -374,9 +366,5 @@ class cisco_N7K_C7009:
                     VALUES(?,?,?)''', (self.file+'-'+'error', self.file+'-'+'error',self.file+'-'+'error',))
         db.commit()             
         db.close()
-
-
-        
-        
         
         
