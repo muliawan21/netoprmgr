@@ -3,7 +3,7 @@ import re
 
 
 
-class cisco_N9K_C93180YC_EX:
+class cisco_N9K_C93108TC_EX:
     def __init__(self,file):
         #variable constructor
         self.file = file

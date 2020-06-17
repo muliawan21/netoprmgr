@@ -3,7 +3,7 @@ import re
 
 
 
-class cisco_N9K_C93180YC_EX:
+class cisco_N9K_C93108TC_FX:
     def __init__(self,file):
         #variable constructor
         self.file = file
@@ -19,8 +19,8 @@ class cisco_N9K_C93180YC_EX:
                 break
         for line in read_file_list:
             #get device model
-            if re.findall('.*cisco Nexus9000\s+(\S+)\s+chassis',line):
-                model = re.findall('.*cisco Nexus9000\s+(\S+)\s+chassis',line)
+            if re.findall('.*cisco Nexus9000\s+(\S+)\s+Chassis',line):
+                model = re.findall('.*cisco Nexus9000\s+(\S+)\s+Chassis',line)
                 model = model[0]
                 break                
         for line in read_file_list:
