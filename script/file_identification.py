@@ -72,9 +72,6 @@ from netoprmgr.device_templates.cisco.cisco_ASR902 import cisco_ASR902
 from netoprmgr.device_templates.cisco.cisco_ISR4431 import cisco_ISR4431
 from netoprmgr.device_templates.cisco.cisco_C3850S_S import cisco_C3850S_S
 from netoprmgr.device_templates.cisco.cisco_C3850T_S import cisco_C3850T_S
-from netoprmgr.device_templates.cisco.cisco_N9K_C9372PX import cisco_N9K_C9372PX
-from netoprmgr.device_templates.cisco.cisco_N9K_C93108TC_EX import cisco_N9K_C93108TC_EX
-from netoprmgr.device_templates.cisco.cisco_N9K_C93108TC_FX import cisco_N9K_C93108TC_FX
 from netoprmgr.device_templates.cisco.cisco_N9K_C93180YC_EX import cisco_N9K_C93180YC_EX
 from netoprmgr.device_templates.cisco.cisco_N7K_C7009 import cisco_N7K_C7009
 from netoprmgr.device_templates.cisco.cisco_N7K_C7010 import cisco_N7K_C7010
@@ -82,6 +79,10 @@ from netoprmgr.device_templates.cisco.cisco_WLC_2504 import cisco_WLC_2504
 from netoprmgr.device_templates.cisco.cisco_WLC_3504 import cisco_WLC_3504
 from netoprmgr.device_templates.cisco.cisco_WLC_5508 import cisco_WLC_5508
 from netoprmgr.device_templates.cisco.cisco_WLC_5520 import cisco_WLC_5520
+from netoprmgr.device_templates.cisco.cisco_N9K_C9372PX import cisco_N9K_C9372PX
+from netoprmgr.device_templates.cisco.cisco_N9K_C93108TC_EX import cisco_N9K_C93108TC_EX
+from netoprmgr.device_templates.cisco.cisco_N9K_C93108TC_FX import cisco_N9K_C93108TC_FX
+from netoprmgr.device_templates.cisco.cisco_N9K_C93180YC_EX import cisco_N9K_C93180YC_EX
 from netoprmgr.device_templates.cisco.cisco_N9K_C9504 import cisco_N9K_C9504
 from netoprmgr.device_templates.cisco.cisco_N9K_C9508 import cisco_N9K_C9508
 from netoprmgr.device_templates.cisco.cisco_VG224 import cisco_VG224
@@ -605,6 +606,11 @@ class file_identification:
                             cisco_N9K_C93180YC_EX(file)
                             xcek='disable'
                             break
+                        elif re.findall('PID:\s+N9K-C93180YC-EX',i):
+                            print('Executing with N9K-C93180YC-EX')
+                            cisco_N9K_C93180YC_EX(file)
+                            xcek='disable'
+                            break
                         elif re.findall('PID:\s+N9K-C93108TC-EX',i):
                             print('Executing with N9K-C93108TC-EX')
                             cisco_N9K_C93108TC_EX(file)
@@ -618,6 +624,8 @@ class file_identification:
                         elif re.findall('PID:\s+N9K-C9372PX',i):
                             print('Executing with N9K-C9372PX')
                             cisco_N9K_C9372PX(file)
+                            xcek='disable'
+                            break
                         elif re.findall('.*PID:\s+N9K-C9504',i):
                             print('Executing with N9K-C9504')
                             cisco_N9K_C9504(file)
@@ -656,6 +664,8 @@ class file_identification:
                         elif re.findall('.*PID:.*AIR-CT5520',i):
                             print('Executing with AIR-CT5520')
                             cisco_WLC_5520(file)
+                            xcek='disable'
+                            break
                         elif re.findall('.*PID:.*VG224',i):
                             print('Executing with VG224')
                             cisco_VG224(file)

@@ -205,7 +205,6 @@ class cisco_N9K_C9504:
         psu_line_end = 0
         count_line=0
         for i in read_file_list_env:
-            print(i)
             if re.findall('^.*(Fan\d+\S+)\s+N9K-\S+\s+\d+.\d+\s+\S+\s+.*',i):
                 regex_fan = re.findall('^.*(Fan\d+\S+)\s+N9K-\S+\s+\d+.\d+\s+\S+\s+.*',i)
                 print(regex_fan)
