@@ -131,12 +131,12 @@ class cisco_WLC_5520:
         memory_sorted_add_list = False
         for line in read_file_list:
             #make conditional statement to let program start append to list, and get ready to break loop
-            if re.findall('Name\s+Priority\s+BytesInUse\s+BlocksInUse\s+Reaper',line):
+            if re.findall('Name\s+Priority\s+BytesInUse\s+BlocksInUse\s+RawB\s+RawMaxB\s+Cpu\s+Reaper',line):
                 memory_sorted_break = True
                 memory_sorted_add_list = True
             #append value to list
             if memory_sorted_break == True:
-                if re.findall('Name\s+Priority\s+BytesInUse\s+BlocksInUse\s+Reaper',line):
+                if re.findall('Name\s+Priority\s+BytesInUse\s+BlocksInUse\s+RawB\s+RawMaxB\s+Cpu\s+Reaper',line):
                     pass
                 elif re.findall('^\s*$',line):
                     pass
@@ -153,8 +153,8 @@ class cisco_WLC_5520:
         for i in list_memory:
             try:
                 
-                sort_digit = re.findall('.*\(.*\/.*\)\s+(\d+)\s+\d+\s+\(.*\/.*\)%',i)
-                sort_text =  re.findall('(.*)\(.*\/.*\)\s+\d+\s+\d+\s+\(.*\/.*\)%',i)
+                sort_digit = re.findall('.*\(.*\/.*\)\s+(\d+).*\(.*\/.*\)',i)
+                sort_text =  re.findall('(.*)\(.*\/.*\)\s+\d+.*\(.*\/.*\)',i)
                 list_memory_sorted.append(sort_digit[0]+' '+sort_text[0])
             except:
                 pass
