@@ -75,6 +75,9 @@ from netoprmgr.device_templates.cisco.cisco_C3850T_S import cisco_C3850T_S
 from netoprmgr.device_templates.cisco.cisco_N9K_C93180YC_EX import cisco_N9K_C93180YC_EX
 from netoprmgr.device_templates.cisco.cisco_N7K_C7009 import cisco_N7K_C7009
 from netoprmgr.device_templates.cisco.cisco_N7K_C7010 import cisco_N7K_C7010
+from netoprmgr.device_templates.cisco.cisco_N9K_C9504 import cisco_N9K_C9504
+from netoprmgr.device_templates.cisco.cisco_N9K_C9508 import cisco_N9K_C9508
+from netoprmgr.device_templates.cisco.cisco_VG224 import cisco_VG224
 
 class file_identification:
     def __init__(self,files):
@@ -595,6 +598,16 @@ class file_identification:
                             cisco_N9K_C93180YC_EX(file)
                             xcek='disable'
                             break
+                        elif re.findall('.*PID:\s+N9K-C9504',i):
+                            print('Executing with N9K-C9504')
+                            cisco_N9K_C9504(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:\s+N9K-C9508',i):
+                            print('Executing with N9K-C9508')
+                            cisco_N9K_C9508(file)
+                            xcek='disable'
+                            break
                         elif re.findall('.*PID:.*N7K-C7009',i):
                             print('Executing with N7K-C7009')
                             cisco_N7K_C7009(file)
@@ -605,6 +618,11 @@ class file_identification:
                             cisco_N7K_C7010(file)
                             xcek='disable'
                             break
+                        elif re.findall('.*PID:.*VG224',i):
+                            print('Executing with VG224')
+                            cisco_VG224(file)
+                            xcek='disable'
+                            break
                         else:
                             xcek='enable'
                         
@@ -612,8 +630,8 @@ class file_identification:
                         print('Executing None')
                         cisco_None(file)
                     
-            #except NameError:
-                #raise
-            except:
-                pass
+            except NameError:
+                raise
+            #except:
+                #pass
             count_file+=1
