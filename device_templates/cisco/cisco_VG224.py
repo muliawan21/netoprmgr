@@ -242,32 +242,36 @@ class cisco_VG224:
                 fan = regex_fan[0]
                 list_fan.append(fan)
                 #print(fan)
-            if re.findall('^.*Fan\s+status:\s+(.*).', i):
-                regex_fan_cond = re.findall('^.*Fan\s+status:\s+(.*).', i)
-                fan_cond = regex_fan_cond[0]
+            if 'Fan status:' in i:
+                fan_cond = read_file_list_env[count_line+2]
+                fan_cond = re.findall('^\s+(.*).', fan_cond)
+                fan_cond = fan_cond[0]
                 list_fan_cond_cp.append(fan_cond)
-                #print(fan_cond)
-            if re.findall('^.*Board\s+(Temperature):\s+.*.',i):
-                regex_temp = re.findall('^.*Board\s+(Temperature):\s+.*.',i)
+                #tulis = input(fan_cond)
+            if re.findall('^.*Board\s+(Temperature):',i):
+                regex_temp = re.findall('^.*Board\s+(Temperature):',i)
                 temp = regex_temp[0]
                 list_temp.append(temp)
-                #print(temp)
-            if re.findall('^.*Board\s+Temperature:\s+(.*).', i):
-                regex_temp_cond = re.findall('^.*Board\s+Temperature:\s+(.*).', i)
-                temp_cond = regex_temp_cond[0]
+                #tulis = input(temp)
+            if 'Board Temperature:' in i:
+                temp_cond = read_file_list_env[count_line+2]
+                temp_cond = re.findall('^\s+(.*).', temp_cond)
+                temp_cond = temp_cond[0]
                 list_temp_cond.append(temp_cond)
-                #print(temp_cond)
-            if re.findall('^.*Misc.\s+status:\s+Main\s+(Power\s+Supply)\s+.*.',i):
-                regex_psu = re.findall('^.*Misc.\s+status:\s+Main\s+(Power\s+Supply)\s+.*.',i)
-                psu = regex_psu[0]
+                #tulis = input(temp_cond)
+            if 'Misc. status:' in i:
+                psu = read_file_list_env[count_line+2]
+                psu = re.findall('^.*\s+Main\s+(Power Supply)\s.*.', psu)
+                psu = psu[0]
                 list_psu.append(psu)
-                #print(temp)
-            if re.findall('^.*Misc.\s+status:\s+Main\s+Power\s+Supply\s+(.*).', i):
-                regex_psu_cond = re.findall('^.*Misc.\s+status:\s+Main\s+Power\s+Supply\s+(.*).', i)
-                psu_cond = regex_psu_cond[0]
+                #tulis = input(psu)
+            if 'Misc. status:' in i:
+                psu_cond = read_file_list_env[count_line+2]
+                psu_cond = re.findall('^.*\s+Main\s+Power Supply\s(.*).', psu_cond)
+                psu_cond = psu_cond[0]
                 list_psu_cond.append(psu_cond)
-                #print(temp_cond)
-
+                #tulis = input(psu_cond)
+            count_line+=1
         #open db connection
         db = sqlite3.connect('pmdb')
         cursor = db.cursor()
@@ -340,6 +344,18 @@ class cisco_VG224:
             for fan in list_fan:
                 cursor.execute('''INSERT INTO envtable(devicename, system, item, status)
                         VALUES(?,?,?,?)''', (self.file+'-'+'error','Fan',self.file+'-'+'error',self.file+'-'+'error',))
+                count_sql+=1
+        try:
+            count_sql = 0
+            for temp in list_temp:
+                cursor.execute('''INSERT INTO envtable(devicename, system, item, status)
+                        VALUES(?,?,?,?)''', (devicename,'Temperature',temp,list_temp_cond[count_sql],))
+                count_sql+=1
+        except:
+            count_sql = 0
+            for temp in list_temp:
+                cursor.execute('''INSERT INTO envtable(devicename, system, item, status)
+                        VALUES(?,?,?,?)''', (self.file+'-'+'error','Temperature',self.file+'-'+'error',self.file+'-'+'error',))
                 count_sql+=1
        #LOG Checking
         try:
