@@ -35,15 +35,16 @@ class cisco_N9K_C93180YC_EX:
                 uptime = re.findall('^.*uptime is (.*)',line)
                 uptime = uptime[0]
                 break
+        
+        #get configuration register
+        confreg = '-'
+
         for line in read_file_list:
             #SOFTWARE TABLE SUMMARY
             if re.findall('.*NXOS: version\s+(\S+)',line):
                 version = re.findall('.*NXOS: version\s+(\S+)',line)
                 version = version[0]
                 break
-        
-        #print confreg
-        confreg = '-'
         
         list_card = []
         list_serial_number = []
@@ -70,55 +71,72 @@ class cisco_N9K_C93180YC_EX:
             #break loop
             if hardware_break == True and re.findall('.*#',line):
                 break
-        
+
+        cpu_break = False
         for line in read_file_list:
             #CPU
             #cpu user
-            if re.findall('^CPU util\s+:\s+(\d.\d+)\S+\s+user,\s+\d.\d+\S+\s+kernel',line):
+            if re.findall('^.*CPU util\s+:\s+(\d+.\d+)',line):
                 cpu_break = True
-                cpu_user = re.findall('^CPU util\s+:\s+(\d.\d+)\S+\s+user,\s+\d.\d+\S+\s+kernel',line)
-                cpu_user = float(cpu_user[0])
+                user = re.findall('^.*CPU util\s+:\s+(\d+.\d+)',line)
+                user = float(user[0])
+                #print('cpu')
+                #print(cpu)
             #cpu kernel
-            if re.findall('^CPU util\s+:\s+\d.\d+\S+\s+user,\s+(\d.\d+)\S+\s+kernel',line):
-                cpu_kernel = re.findall('^CPU util\s+:\s+\d.\d+\S+\s+user,\s+(\d.\d+)\S+\s+kernel',line)
-                cpu_kernel = float(cpu_kernel[0])
+            if re.findall('^.*CPU util\s+:\s+\d+.\d+%\s+user,\s+(\d+.\d+)',line):
+                cpu_break = True
+                kernel = re.findall('^.*CPU util\s+:\s+\d+.\d+%\s+user,\s+(\d+.\d+)',line)
+                kernel = float(kernel[0])
+                #print('cpu')
+                #print(cpu)
+ 
                 #cpu total
-                cpu_total = float(cpu_user) + float(cpu_kernel)
+                process = float(user) + float(kernel)
+                total = float(user) + float(kernel)
                 #cpu status
-                if cpu_total<21 :
+                if total<21 :
                     status='Low'
-                elif cpu_total<81 :
+                elif total<81 :
                     status='Medium'
                 else:
                     status='High'
-                cpu_total=str(cpu_total)
+                total=str(total)
+            
+            #cpu interrupt
+            interrupt = '0'
+ 
+            #break loop
+            if cpu_break == True and re.findall('.*#',line):
+                break
         
         memory_break = False
         for line in read_file_list:
             #MEMORY
             #Memory Total
-            if re.findall('^Processor Pool Total:\s+(\d+)',line):
+            if re.findall('^Memory usage:\s+(\d+)',line):
                 memory_break = True
-                memory_total = re.findall('^Processor Pool Total:\s+(\d+)',line)
+                memory_total = re.findall('^Memory usage:\s+(\d+)',line)
                 memory_total = memory_total[0]
             #Memory Used
-            if re.findall('^Processor Pool Total:\s+\d+\s+Used:\s+(\d+)',line):
-                memory_used = re.findall('^Processor Pool Total:\s+\d+\s+Used:\s+(\d+)',line)
+            if re.findall('^Memory usage:\s+\d+.*total,\s+(\d+)',line):
+                memory_used = re.findall('^Memory usage:\s+\d+.*total,\s+(\d+)',line)
                 memory_used = memory_used[0]
+                #memory percentage
+                memory_percentage = (int(memory_used)/int(memory_total))*100
+                #memory status
+                if float(memory_percentage)<21 :
+                    memory_status='Low'
+                elif float(memory_percentage)<81 :
+                    memory_status='Medium'
+                else:
+                    memory_status='High'
+                memory_percentage=re.findall('(^.{5})*',str(memory_percentage))
+                utils=memory_percentage[0]
+            #break loop
+            if memory_break == True and re.findall('.*#',line):
+                break
 
-        #memory percentage
-        memory_percentage = (int(memory_used)/int(memory_total))*100
-        #memory status
-        if float(memory_percentage)<21 :
-            memory_status='Low'
-        elif float(memory_percentage)<81 :
-            memory_status='Medium'
-        else:
-            memory_status='High'
-        memory_percentage=re.findall('(^.{5})*',str(memory_percentage))
-        utils=memory_percentage[0]
 
-        
         #sorting memory
         list_memory = []
         list_memory_sorted = []
@@ -126,12 +144,12 @@ class cisco_N9K_C93180YC_EX:
         memory_sorted_add_list = False
         for line in read_file_list:
             #make conditional statement to let program start append to list, and get ready to break loop
-            if re.findall('.*PID\s+TTY\s+Allocated\s+Freed\s+Holding\s+Getbufs\s+Retbufs\s+Process',line):
+            if re.findall('.*PID\s+MemAlloc\s+MemLimit\s+MemUsed\s+StackBase\/Ptr\s+Process',line):
                 memory_sorted_break = True
                 memory_sorted_add_list = True
             #append value to list
             if memory_sorted_break == True:
-                if re.findall('.*PID\s+TTY\s+Allocated\s+Freed\s+Holding\s+Getbufs\s+Retbufs\s+Process',line):
+                if re.findall('.*PID\s+MemAlloc\s+MemLimit\s+MemUsed\s+StackBase\/Ptr\s+Process',line):
                     pass
                 else:
                     list_memory.append(line)
@@ -145,8 +163,8 @@ class cisco_N9K_C93180YC_EX:
             try:
                 
                 
-                sort_digit = re.findall('\d+\s+\d+\s+\d+\s+\d+\s+(\d+)\s+\d+\s+\d+\s+.*',i)
-                sort_text =  re.findall('\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+(.*)',i)
+                sort_digit = re.findall('\d+\s+\d+\s+\d+\s+(\d+)\s+\S+\/\S+\s+.*',i)
+                sort_text =  re.findall('\d+\s+\d+\s+\d+\s+\d+\s+\S+\/\S+\s+(.*)',i)
                 list_memory_sorted.append(sort_digit[0]+' '+sort_text[0])
             except:
                 pass
@@ -228,34 +246,34 @@ class cisco_N9K_C93180YC_EX:
         psu_line_end = 0
         count_line=0
         for i in read_file_list_env:
-            if re.findall('.*RPM:\s+(fan\d+\s+\S+)\s+\S+',i):
-                regex_fan = re.findall('.*RPM:\s+(fan\d+\s+\S+)\s+\S+',i)
+            if re.findall('^(Fan.*)\s+NXA\S+\s+\S+\s+\S+\s+\S+',i):
+                regex_fan = re.findall('^(Fan.*)\s+NXA\S+\s+\S+\s+\S+\s+\S+',i)
+                #tulis = input(i)
                 fan = regex_fan[0]
                 list_fan.append(fan)
                 #print(fan)
-            if re.findall('.*RPM:\s+fan\d+\s+\S+\s+(\S+)', i):
-                regex_fan_cond = re.findall('.*RPM:\s+fan\d+\s+\S+\s+(\S+)', i)
+            if re.findall('^Fan.*\s+NXA\S+\s+\S+\s+\S+\s+(\S+)', i):
+                regex_fan_cond = re.findall('^Fan.*\s+NXA\S+\s+\S+\s+\S+\s+(\S+)', i)
                 fan_cond = regex_fan_cond[0]
                 list_fan_cond_cp.append(fan_cond)
                 #print(fan_cond)
-            if re.findall('.*Temp: (.*let \d+\s+\S+)\s+\S+',i):
-                regex_temp = re.findall('.*Temp: (.*let \d+\s+\S+)\s+\S+',i)
+            if re.findall('^\d+\s+(\S+)\s+\d+\s+\d+\s+\d+\s+\S+',i):
+                regex_temp = re.findall('^\d+\s+(\S+)\s+\d+\s+\d+\s+\d+\s+\S+',i)
                 temp = regex_temp[0]
                 list_temp.append(temp)
                 #print(temp)
-            if re.findall('.*Temp: .*let \d+\s+\S+\s+(\S+)', i):
-                regex_temp_cond = re.findall('.*Temp: .*let \d+\s+\S+\s+(\S+)', i)
+            if re.findall('^\d+\s+\S+\s+\d+\s+\d+\s+\d+\s+(\S+)', i):
+                regex_temp_cond = re.findall('^\d+\s+\S+\s+\d+\s+\d+\s+\d+\s+(\S+)', i)
                 temp_cond = regex_temp_cond[0]
                 list_temp_cond.append(temp_cond)
                 #print(temp_cond)
-                
-            if re.findall('.*P: (\S+ pwr\s+\S+)\s+\S+',i):
-                regex_psu = re.findall('.*P: (\S+ pwr\s+\S+)\s+\S+',i)
+            if re.findall('^(\d+\s+NXA\S+)\s+\d+\s+W\s+\d+\s+W\s+\d+\s+W\s+\S+',i):
+                regex_psu = re.findall('^(\d+\s+NXA\S+)\s+\d+\s+W\s+\d+\s+W\s+\d+\s+W\s+\S+',i)
                 psu = regex_psu[0]
                 list_psu.append(psu)
                 #print(psu)
-            if re.findall('.*P: \S+ pwr\s+\S+\s+(\S+)', i):
-                regex_psu_cond = re.findall('.*P: \S+ pwr\s+\S+\s+(\S+)', i)
+            if re.findall('^\d+\s+NXA\S+\s+\d+\s+W\s+\d+\s+W\s+\d+\s+W\s+(\S+)', i):
+                regex_psu_cond = re.findall('^\d+\s+NXA\S+\s+\d+\s+W\s+\d+\s+W\s+\d+\s+W\s+(\S+)', i)
                 psu_cond = regex_psu_cond[0]
                 list_psu_cond.append(psu_cond)
                 #print(psu_cond)
@@ -298,10 +316,10 @@ class cisco_N9K_C93180YC_EX:
                 count_sql+=1
         #db process cpu and memory
         try:
-            cursor.execute('''INSERT INTO cpusumtable(devicename, model, cpu_user, cpu_kernel, cpu_total, topcpu, status)
-                    VALUES(?,?,?,?,?,?,?)''', (devicename, model, cpu_user, cpu_kernel, cpu_total, topcpu, status,))
+            cursor.execute('''INSERT INTO cpusumtable(devicename, model, total, process, interrupt, topcpu, status)
+                    VALUES(?,?,?,?,?,?,?)''', (devicename, model, total, process, interrupt, topcpu, status,))
         except:
-            cursor.execute('''INSERT INTO cpusumtable(devicename, model, cpu_user, cpu_kernel, cpu_total, topcpu, status)
+            cursor.execute('''INSERT INTO cpusumtable(devicename, model, total, process, interrupt, topcpu, status)
                     VALUES(?,?,?,?,?,?,?)''', (self.file+'-'+'error', self.file+'-'+'error', self.file+'-'+'error', self.file+'-'+'error', self.file+'-'+'error', self.file+'-'+'error', self.file+'-'+'error',))            
         try:
             cursor.execute('''INSERT INTO memsumtable(devicename, model, utils, topproc, status)
