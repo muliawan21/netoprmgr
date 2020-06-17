@@ -341,6 +341,18 @@ class cisco_2801:
                 cursor.execute('''INSERT INTO envtable(devicename, system, item, status)
                         VALUES(?,?,?,?)''', (self.file+'-'+'error','Fan',self.file+'-'+'error',self.file+'-'+'error',))
                 count_sql+=1
+        try:
+            count_sql = 0
+            for temp in list_temp:
+                cursor.execute('''INSERT INTO envtable(devicename, system, item, status)
+                        VALUES(?,?,?,?)''', (devicename,'Temperature',temp,list_temp_cond[count_sql],))
+                count_sql+=1
+        except:
+            count_sql = 0
+            for temp in list_temp:
+                cursor.execute('''INSERT INTO envtable(devicename, system, item, status)
+                        VALUES(?,?,?,?)''', (self.file+'-'+'error','Temperature',self.file+'-'+'error',self.file+'-'+'error',))
+                count_sql+=1
        #LOG Checking
         try:
             cursor.execute('''INSERT INTO logtable(devicename, model, script)
