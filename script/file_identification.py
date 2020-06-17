@@ -75,6 +75,10 @@ from netoprmgr.device_templates.cisco.cisco_C3850T_S import cisco_C3850T_S
 from netoprmgr.device_templates.cisco.cisco_N9K_C93180YC_EX import cisco_N9K_C93180YC_EX
 from netoprmgr.device_templates.cisco.cisco_N7K_C7009 import cisco_N7K_C7009
 from netoprmgr.device_templates.cisco.cisco_N7K_C7010 import cisco_N7K_C7010
+from netoprmgr.device_templates.cisco.cisco_WLC_2504 import cisco_WLC_2504
+from netoprmgr.device_templates.cisco.cisco_WLC_3504 import cisco_WLC_3504
+from netoprmgr.device_templates.cisco.cisco_WLC_5508 import cisco_WLC_5508
+from netoprmgr.device_templates.cisco.cisco_WLC_5520 import cisco_WLC_5520
 
 class file_identification:
     def __init__(self,files):
@@ -605,6 +609,26 @@ class file_identification:
                             cisco_N7K_C7010(file)
                             xcek='disable'
                             break
+                        elif re.findall('.*PID:.*AIR-CT2504',i):
+                            print('Executing with AIR-CT2504')
+                            cisco_WLC_2504(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*AIR-CT3504',i):
+                            print('Executing with AIR-CT3504')
+                            cisco_WLC_3504(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*AIR-CT5508',i):
+                            print('Executing with AIR-CT5508')
+                            cisco_WLC_5508(file)
+                            xcek='disable'
+                            break
+                        elif re.findall('.*PID:.*AIR-CT5520',i):
+                            print('Executing with AIR-CT5520')
+                            cisco_WLC_5520(file)
+                            xcek='disable'
+                            break
                         else:
                             xcek='enable'
                         
@@ -612,8 +636,8 @@ class file_identification:
                         print('Executing None')
                         cisco_None(file)
                     
-            #except NameError:
-                #raise
-            except:
-                pass
+            except NameError:
+                raise
+            #except:
+                #pass
             count_file+=1
