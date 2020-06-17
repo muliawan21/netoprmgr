@@ -217,7 +217,7 @@ class cisco_ISR4331:
             read_file_list_env.append(line)
             if read_file_logic_check == True and 'show' in line:
                 break
-            if 'show env' in line and '%' not in read_file_list[count_read_file+1] and '%' not in read_file_list[count_read_file+2]:
+            if 'show env' in line and '%' not in read_file_list[count_read_file+1] if 'show env' in line and '%' not in read_file_list[count_read_file+1] and '%' not in read_file_list[count_read_file+2] and '!' not in read_file_list[count_read_file+1]::
                 read_file_logic_check = True
             count_read_file+=1
 
