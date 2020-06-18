@@ -1786,3 +1786,12 @@ h1, h2, h3, h4, h5,
   color: #fff;
   font-family: "Rubik", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
+
+.scroll {
+  max-height: 200px;
+  overflow-y: scroll;
+}
+
+.ludes-margin-bottom{
+  margin-bottom: 20px;
+}
