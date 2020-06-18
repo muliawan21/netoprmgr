@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
     <h1 data-aos="fade-up">Click to <span class="typed-words"></span></h1>
-    <form action="{{ url_for('report_generate') }}">
-        <!--input type="submit" value="Submit"-->
-        <button type="submit" class="btn btn-primary" value="Submit">Generate</button>
-    </form>
 
+    <!--input type="submit" value="Submit"-->
+    <button class="btn btn-primary" onclick="triggerSSE()">Generate</button>
+    <div>
+        <div class="card" id="result">
+        </div>
+    </div>
     <script src="{{ url_for('static', filename='bootstrap/js/typed.js') }}"></script>
     <script>
             var typed = new Typed('.typed-words', {
@@ -18,4 +20,29 @@
             showCursor: true
             });
     </script>
+
+    <script>
+        function triggerSSE() {
+        if(typeof(EventSource) !== "undefined") {
+        var source = new EventSource("/report/generate");
+        var str_find = "Finished";
+        source.onmessage = function(event) {
+            //var txt = even.data;
+            document.getElementById("result").innerHTML += event.data + "<br>";
+            //alert(even.data);
+            //var obj = JSON.parse(txt);
+            //document.getElementById("result").innerHTML += obj.total_print + "<br>";
+            //console.log(obj.total_print);
+            event_check = event.data.includes("Finished");
+            if(event_check==true){
+            source.close()
+            //alert('ketemu')
+            };
+        };
+        } else {
+            document.getElementById("result").innerHTML = "Sorry, your browser does not support server-sent events...";
+        }
+        }
+    </script>
+
 {% endblock %}

@@ -10,7 +10,7 @@ import urllib.request
 from werkzeug.utils import secure_filename
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
-from flask import Flask, render_template, send_file, flash, request, redirect
+from flask import Flask, render_template, send_file, flash, request, redirect, Response
 from flask_login import (login_user, current_user, logout_user,
 						login_required, LoginManager, UserMixin)
 from flask_sqlalchemy import SQLAlchemy
