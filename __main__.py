@@ -1,6 +1,10 @@
 import os
+import sys
+import shutil
+import time
 from datetime import datetime
 import pkg_resources
+import json
 
 import urllib.request
 from werkzeug.utils import secure_filename
@@ -259,9 +263,37 @@ def report_generate_page():
 @app.route('/report/generate')
 @login_required
 def report_generate():
-	from main_cli import MainCli
-	MainCli.createNewReport()
-	return redirect('/report/result')
+	def report_generate_detail():
+		from netoprmgr.script.file_identification import file_identification
+		from netoprmgr.script.convert_docx import convert_docx
+		from netoprmgr.script.dbreport import dbreport
+		#change directory
+		chg_dir = os.chdir(CAPT_DIR)
+		current_dir=os.getcwd()
+		files = os.listdir(current_dir)
+		#create db
+		dbreport()
+		
+		sys.stdout.write('testing')
+		for enum, file in enumerate(files, 1):
+			total_print = ('File '+str(enum)+' of '+str(len(files)))
+			func_file_identification=file_identification(file)
+			file_execute_print = func_file_identification.file_identification()
+			yield f"data:{total_print}\n\n"
+			yield f"data:Processing File : {file}\n\n"
+			print(file)
+		yield f"data:Processing Document\n\n"
+		convert_docx=convert_docx()
+		convert_docx.convert_docx()
+		time.sleep(3)
+		src_mv = (CAPT_DIR+'/preventive_maintenance.docx')
+		dst_mv = (RESULT_DIR+'/preventive_maintenance.docx')
+		shutil.move(src_mv,dst_mv)
+		os.remove("pmdb")
+		yield f"data:Document has been saved to preventive_maintenance.docx\n\n"
+		yield f"data:Finished\n\n" 
+	#return redirect('/report/result')
+	return Response(report_generate_detail(), mimetype='text/event-stream')
 
 @app.route('/report/result')
 @login_required
