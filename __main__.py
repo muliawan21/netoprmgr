@@ -44,6 +44,7 @@ os.chdir(BASE_DIR)
 CAPT_DIR = os.path.join(BASE_DIR,'static','capture')
 DATA_DIR = os.path.join(BASE_DIR,'static','data')
 SCRIPT_DIR = os.path.join(BASE_DIR,'script')
+RESULT_DIR = os.path.join(BASE_DIR,'static','result')
 
 ALLOWED_EXTENSIONS_CAPT = set(['txt', 'log'])
 ALLOWED_EXTENSIONS_DATA = set(['xlsx',])
