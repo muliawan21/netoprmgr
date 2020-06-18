@@ -6,10 +6,9 @@ import urllib.request
 from werkzeug.utils import secure_filename
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template, send_file, flash, request, redirect
 from flask_login import (login_user, current_user, logout_user,
 						login_required, LoginManager, UserMixin)
-from flask import Flask, flash, request, redirect, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_wtf import FlaskForm
@@ -40,6 +39,7 @@ BASE_DIR = pkg_resources.resource_filename('netoprmgr', '')
 os.chdir(BASE_DIR)
 CAPT_DIR = os.path.join(BASE_DIR,'static','capture')
 DATA_DIR = os.path.join(BASE_DIR,'static','data')
+SCRIPT_DIR = os.path.join(BASE_DIR,'script')
 
 ALLOWED_EXTENSIONS_CAPT = set(['txt', 'log'])
 ALLOWED_EXTENSIONS_DATA = set(['xlsx',])
@@ -75,6 +75,13 @@ class LoginForm(FlaskForm):
 #ROUTE
 @app.route("/")
 def home():
+	chg_dir = os.chdir(SCRIPT_DIR)
+	current_dir=os.getcwd()
+	read_file = open('file_identification.py','r')
+	read_file_list = read_file.readlines()
+	for line in read_file_list:
+		if '#' in line and 'except NameError' in line:
+			flash('Debug File Identification Still On')
 	return render_template('home.html')
 
 @app.route("/about")
