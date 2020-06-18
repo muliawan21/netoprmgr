@@ -1795,3 +1795,7 @@ h1, h2, h3, h4, h5,
 .ludes-margin-bottom{
   margin-bottom: 20px;
 }
+
+.hidebutton{
+  display: none;
+}
