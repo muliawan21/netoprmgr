@@ -534,9 +534,9 @@ class file_identification:
                     executing_print=('Executing None')
                     cisco_None(self.file)
                 
-        #except NameError:
-            #raise
-        except:
-            pass
+        except NameError:
+            raise
+        #except:
+            #pass
             #count_file+=1
         return executing_print
