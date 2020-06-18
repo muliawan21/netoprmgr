@@ -103,13 +103,19 @@ class file_identification:
                 pass
             elif 'pmdb' in self.file:
                 pass
+            elif '.zip' in self.file:
+                pass
             else:
                 try:
                     read_file = open(self.file, 'r')
                     read_file_list = read_file.readlines()
                 except:
-                    read_file = open(self.file, 'r', encoding='latin-1')
-                    read_file_list = read_file.readlines()
+                    try:
+                        read_file = open(self.file, 'r', encoding='latin-1')
+                        read_file_list = read_file.readlines()
+                    except:
+                        print('Error Codec!!!')
+                        pass
             
                 for i in read_file_list:
                     if re.findall('.*PID:.*C3750X',i):
