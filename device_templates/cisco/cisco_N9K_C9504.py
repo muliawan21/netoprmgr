@@ -3,7 +3,7 @@ import re
 
 
 
-class cisco_ASR902:
+class cisco_N9K_C9504:
     def __init__(self,file):
         #variable constructor
         self.file = file
@@ -19,14 +19,14 @@ class cisco_ASR902:
                 break
         for line in read_file_list:
             #get device model
-            if re.findall('.*isco\s+(\S+).*processor.*bytes.*memory',line):
-                model = re.findall('.*isco\s+(\S+).*processor.*bytes.*memory',line)
+            if re.findall('^.*cisco (Nexus\d+\s+\S+)',line):
+                model = re.findall('^.*cisco (Nexus\d+\s+\S+)',line)
                 model = model[0]
                 break                
         for line in read_file_list:
             #get ios version
-            if re.findall('^System image file is "(.*)"',line):
-                iosversion = re.findall('^System image file is "(.*)"',line)
+            if re.findall('.*NXOS image file is:\s+(bootflash:\S+)',line):
+                iosversion = re.findall('.*NXOS image file is:\s+(bootflash:\S+)',line)
                 iosversion = iosversion[0]
                 break
         for line in read_file_list:
@@ -36,17 +36,14 @@ class cisco_ASR902:
                 uptime = uptime[0]
                 break
         for line in read_file_list:
-            #get configuration register
-            if re.findall('^Configuration register is (.*)',line):
-                confreg = re.findall('^Configuration register is (.*)',line)
-                confreg = confreg[0]
-                break
-        for line in read_file_list:
             #SOFTWARE TABLE SUMMARY
-            if re.findall('^.*Cisco IOS .*,\s+Version\s+(.*)',line):
-                version = re.findall('^.*Cisco IOS .*,\s+Version\s+(.*)',line)
+            if re.findall('.*NXOS: version\s+(\S+)',line):
+                version = re.findall('.*NXOS: version\s+(\S+)',line)
                 version = version[0]
                 break
+        
+        #print confreg
+        confreg = '-'
         
         list_card = []
         list_serial_number = []
@@ -74,21 +71,27 @@ class cisco_ASR902:
             if hardware_break == True and re.findall('.*#',line):
                 break
         
+        cpu_break = False
         for line in read_file_list:
             #CPU
-            #cpu
-            if re.findall('.*CPU utilization for five seconds:\s+(\d+)\S+\d+',line):
+            #cpu user
+            if re.findall('^.*CPU util\s+:\s+(\d+.\d+)',line):
                 cpu_break = True
-                total = re.findall('.*CPU utilization for five seconds:\s+(\d+)\S+\d+',line)
-                total = int(total[0])
+                user = re.findall('^.*CPU util\s+:\s+(\d+.\d+)',line)
+                user = float(user[0])
                 #print('cpu')
                 #print(cpu)
-            #cpu interrupt
-            if re.findall('.*CPU utilization for five seconds:\s+\d+\S+(\d+)',line):
-                interrupt = re.findall('.*CPU utilization for five seconds:\s+\d+\S+(\d+)',line)
-                interrupt = interrupt[0]
+            #cpu kernel
+            if re.findall('^.*CPU util\s+:\s+\d+.\d+%\s+user,\s+(\d+.\d+)',line):
+                cpu_break = True
+                kernel = re.findall('^.*CPU util\s+:\s+\d+.\d+%\s+user,\s+(\d+.\d+)',line)
+                kernel = float(kernel[0])
+                #print('cpu')
+                #print(cpu)
+
                 #cpu total
-                process = int(total) - int(interrupt)
+                process = float(user) + float(kernel)
+                total = float(user) + float(kernel)
                 #cpu status
                 if total<21 :
                     status='Low'
@@ -97,76 +100,44 @@ class cisco_ASR902:
                 else:
                     status='High'
                 total=str(total)
+            
+            #cpu interrupt
+            interrupt = '0'
+
+            #break loop
+            if cpu_break == True and re.findall('.*#',line):
+                break
         
         memory_break = False
         for line in read_file_list:
             #MEMORY
             #Memory Total
-            if re.findall('^Processor Pool Total:\s+(\d+)',line):
+            if re.findall('^Memory usage:\s+(\d+)',line):
                 memory_break = True
-                memory_total = re.findall('^Processor Pool Total:\s+(\d+)',line)
+                memory_total = re.findall('^Memory usage:\s+(\d+)',line)
                 memory_total = memory_total[0]
             #Memory Used
-            if re.findall('^Processor Pool Total:\s+\d+\s+Used:\s+(\d+)',line):
-                memory_used = re.findall('^Processor Pool Total:\s+\d+\s+Used:\s+(\d+)',line)
+            if re.findall('^Memory usage:\s+\d+.*total,\s+(\d+)',line):
+                memory_used = re.findall('^Memory usage:\s+\d+.*total,\s+(\d+)',line)
                 memory_used = memory_used[0]
-
-        #memory percentage
-        memory_percentage = (int(memory_used)/int(memory_total))*100
-        #memory status
-        if float(memory_percentage)<21 :
-            memory_status='Low'
-        elif float(memory_percentage)<81 :
-            memory_status='Medium'
-        else:
-            memory_status='High'
-        memory_percentage=re.findall('(^.{5})*',str(memory_percentage))
-        utils=memory_percentage[0]
+                #memory percentage
+                memory_percentage = (int(memory_used)/int(memory_total))*100
+                #memory status
+                if float(memory_percentage)<21 :
+                    memory_status='Low'
+                elif float(memory_percentage)<81 :
+                    memory_status='Medium'
+                else:
+                    memory_status='High'
+                memory_percentage=re.findall('(^.{5})*',str(memory_percentage))
+                utils=memory_percentage[0]
+            #break loop
+            if memory_break == True and re.findall('.*#',line):
+                break
 
 
         #sorting memory
-        list_memory = []
-        list_memory_sorted = []
-        memory_sorted_break = False
-        memory_sorted_add_list = False
-        for line in read_file_list:
-            #make conditional statement to let program start append to list, and get ready to break loop
-            if re.findall('.*PID\s+TTY\s+Allocated\s+Freed\s+Holding\s+Getbufs\s+Retbufs\s+Process',line):
-                memory_sorted_break = True
-                memory_sorted_add_list = True
-            #append value to list
-            if memory_sorted_break == True:
-                if re.findall('.*PID\s+TTY\s+Allocated\s+Freed\s+Holding\s+Getbufs\s+Retbufs\s+Process',line):
-                    pass
-                else:
-                    list_memory.append(line)
-            #break loop
-            if memory_sorted_break == True and re.findall('.*#',line):
-                break
-            elif memory_sorted_break == True and re.findall('^\s*$',line):
-                break
-        #create new list that only contain memory allocated and name application that using it
-        for i in list_memory:
-            try:
-                
-                
-                sort_digit = re.findall('\d+\s+\d+\s+\d+\s+\d+\s+(\d+)\s+\d+\s+\d+\s+.*',i)
-                sort_text =  re.findall('\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+\d+\s+(.*)',i)
-                list_memory_sorted.append(sort_digit[0]+' '+sort_text[0])
-            except:
-                pass
-        try:
-            #sort memory with allocated as key
-            list_memory_sorted.sort(reverse=True,key = lambda x: int(x.split()[0]))
-            #print('Memory Top Three')
-            topproc1 = re.findall('\d+\s+(.*)',list_memory_sorted[0])
-            topproc2 = re.findall('\d+\s+(.*)',list_memory_sorted[1])
-            topproc3 = re.findall('\d+\s+(.*)',list_memory_sorted[2])
-            topproc = (topproc1[0]+'\n'+topproc2[0]+'\n'+topproc3[0])
-            #print(memory_top_three)
-        except:
-            pass
-
+        topproc = "-"
 
         #sorting cpu
         list_cpu = []
@@ -175,12 +146,12 @@ class cisco_ASR902:
         cpu_sorted_add_list = False
         for line in read_file_list:
             #make conditional statement to let program start append to list, and get ready to break loop
-            if re.findall('.*PID\s+Runtime\S+\s+Invoked\s+uSecs\s+5Sec\s+1Min\s+5Min\s+TTY\s+Process',line):
+            if re.findall('.*PID\s+Runtime\S+\s+Invoked\s+uSecs\s+1Sec\s+Process',line):
                 cpu_sorted_break = True
                 cpu_sorted_add_list = True
             #append value to list
             if cpu_sorted_break == True:
-                if re.findall('.*PID\s+Runtime\S+\s+Invoked\s+uSecs\s+5Sec\s+1Min\s+5Min\s+TTY\s+Process',line):
+                if re.findall('.*PID\s+Runtime\S+\s+Invoked\s+uSecs\s+1Sec\s+Process',line):
                     pass
                 else:
                     list_cpu.append(line)
@@ -194,8 +165,8 @@ class cisco_ASR902:
             try:
                 
                 
-                sort_digit = re.findall('\d+\s+\d+\s+\d+\s+\d+\s+(\d+[.]\d+).*\d+[.]\d+.*\d+[.]\d+.*\d+\s+.*',i)
-                sort_text =  re.findall('\d+\s+\d+\s+\d+\s+\d+\s+\d+[.]\d+.*\d+[.]\d+.*\d+[.]\d+.*\d+\s+(.*)',i)
+                sort_digit = re.findall('\d+\s+\d+\s+\d+\s+\d+\s+(\d+.\d+)%\s+.*',i)
+                sort_text =  re.findall('\d+\s+\d+\s+\d+\s+\d+\s+\d+.\d+%\s+(.*)',i)
                 list_cpu_sorted.append(sort_digit[0]+' '+sort_text[0])
             except:
                 pass
@@ -234,36 +205,38 @@ class cisco_ASR902:
         psu_line_end = 0
         count_line=0
         for i in read_file_list_env:
-            if re.findall('^\s+(Fan\s+\d+)\s+\S+',i):
-                regex_fan = re.findall('^\s+(Fan\s+\d+)\s+\S+',i)
+            if re.findall('^.*(Fan\d+\S+)\s+N9K-\S+\s+\d+.\d+\s+\S+\s+.*',i):
+                regex_fan = re.findall('^.*(Fan\d+\S+)\s+N9K-\S+\s+\d+.\d+\s+\S+\s+.*',i)
+                print(regex_fan)
+                #tulis = input(i)
                 fan = regex_fan[0]
                 list_fan.append(fan)
-                #print(fan)
-            if re.findall('^\s+Fan\s+\d+\s+(\S+),', i):
-                regex_fan_cond = re.findall('^\s+Fan\s+\d+\s+(\S+),', i)
+            if re.findall('^.*Fan\d+\S+\s+N9K-\S+\s+\d+.\d+\s+\S+\s+(.*)', i):
+                regex_fan_cond = re.findall('^.*Fan\d+\S+\s+N9K-\S+\s+\d+.\d+\s+\S+\s+(.*)', i)
                 fan_cond = regex_fan_cond[0]
                 list_fan_cond_cp.append(fan_cond)
                 #print(fan_cond)
-            if re.findall('^.*(Temp:.*)\s+\s+\s+\s+\s+R0.*Normal',i):
-                regex_temp = re.findall('^.*(Temp:.*)\s+\s+\s+\s+\s+R0.*Normal',i)
+            if re.findall('^.*(\d+\s+CPU)\s+\d+\s+\d+\s+\d+\s+.*',i):
+                regex_temp = re.findall('^.*(\d+\s+CPU)\s+\d+\s+\d+\s+\d+\s+.*',i)
                 temp = regex_temp[0]
                 list_temp.append(temp)
                 #print(temp)
-            if re.findall('^.*Temp:.*\s+\s+\s+\s+\s+R0.*(Normal)', i):
-                regex_temp_cond = re.findall('^.*Temp:.*\s+\s+\s+\s+\s+R0.*(Normal)', i)
+            if re.findall('^.*\d+\s+CPU\s+\d+\s+\d+\s+\d+\s+(.*)', i):
+                regex_temp_cond = re.findall('^.*\d+\s+CPU\s+\d+\s+\d+\s+\d+\s+(.*)', i)
                 temp_cond = regex_temp_cond[0]
                 list_temp_cond.append(temp_cond)
                 #print(temp_cond)
-            if re.findall('^(.*Power Supply\s+\S+\s+\S+).*Status:\s+\S+',i):
-                regex_psu = re.findall('^(.*Power Supply\s+\S+\s+\S+).*Status:\s+\S+',i)
+            if re.findall('^.*(\d)+\s+N9K-\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+.*',i):
+                regex_psu = re.findall('^.*(\d)+\s+N9K-\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+.*',i)
                 psu = regex_psu[0]
                 list_psu.append(psu)
-                #print(temp)
-            if re.findall('^.*Power Supply\s+\S+\s+\S+.*Status:\s+(\S+)', i):
-                regex_psu_cond = re.findall('^.*Power Supply\s+\S+\s+\S+.*Status:\s+(\S+)', i)
+                #print(psu)
+            if re.findall('^.*\d+\s+N9K-\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+(.*)', i):
+                regex_psu_cond = re.findall('^.*\d+\s+N9K-\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+(.*)', i)
                 psu_cond = regex_psu_cond[0]
                 list_psu_cond.append(psu_cond)
-                #print(temp_cond)
+                #print(psu_cond)
+
 
         #open db connection
         db = sqlite3.connect('pmdb')
@@ -324,7 +297,7 @@ class cisco_ASR902:
             count_sql = 0
             for psu in list_psu:
                 cursor.execute('''INSERT INTO envtable(devicename, system, item, status)
-                        VALUES(?,?,?,?)''', (self.file+'-'+'error','Power Supply',self.file+'-'+'error',))
+                        VALUES(?,?,?,?)''', (self.file+'-'+'error','Power Supply',self.file+'-'+'error',self.file+'-'+'error',))
                 count_sql+=1
         try:
             count_sql = 0

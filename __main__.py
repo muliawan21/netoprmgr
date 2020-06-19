@@ -1,15 +1,18 @@
 import os
+import sys
+import shutil
+import time
 from datetime import datetime
 import pkg_resources
+import json
 
 import urllib.request
 from werkzeug.utils import secure_filename
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template, send_file, flash, request, redirect, Response
 from flask_login import (login_user, current_user, logout_user,
 						login_required, LoginManager, UserMixin)
-from flask import Flask, flash, request, redirect, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_wtf import FlaskForm
@@ -40,6 +43,8 @@ BASE_DIR = pkg_resources.resource_filename('netoprmgr', '')
 os.chdir(BASE_DIR)
 CAPT_DIR = os.path.join(BASE_DIR,'static','capture')
 DATA_DIR = os.path.join(BASE_DIR,'static','data')
+SCRIPT_DIR = os.path.join(BASE_DIR,'script')
+RESULT_DIR = os.path.join(BASE_DIR,'static','result')
 
 ALLOWED_EXTENSIONS_CAPT = set(['txt', 'log'])
 ALLOWED_EXTENSIONS_DATA = set(['xlsx',])
@@ -75,6 +80,13 @@ class LoginForm(FlaskForm):
 #ROUTE
 @app.route("/")
 def home():
+	chg_dir = os.chdir(SCRIPT_DIR)
+	current_dir=os.getcwd()
+	read_file = open('file_identification.py','r')
+	read_file_list = read_file.readlines()
+	for line in read_file_list:
+		if '#' in line and 'except NameError' in line:
+			flash('Debug File Identification Still On')
 	return render_template('home.html')
 
 @app.route("/about")
@@ -252,9 +264,37 @@ def report_generate_page():
 @app.route('/report/generate')
 @login_required
 def report_generate():
-	from main_cli import MainCli
-	MainCli.createNewReport()
-	return redirect('/report/result')
+	def report_generate_detail():
+		from netoprmgr.script.file_identification import file_identification
+		from netoprmgr.script.convert_docx import convert_docx
+		from netoprmgr.script.dbreport import dbreport
+		#change directory
+		chg_dir = os.chdir(CAPT_DIR)
+		current_dir=os.getcwd()
+		files = os.listdir(current_dir)
+		#create db
+		dbreport()
+		
+		sys.stdout.write('testing')
+		for enum, file in enumerate(files, 1):
+			total_print = ('File '+str(enum)+' of '+str(len(files)))
+			func_file_identification=file_identification(file)
+			file_execute_print = func_file_identification.file_identification()
+			yield f"data:{total_print}\n\n"
+			yield f"data:Processing File : {file}\n\n"
+			print(file)
+		yield f"data:Processing Document\n\n"
+		convert_docx=convert_docx()
+		convert_docx.convert_docx()
+		time.sleep(3)
+		src_mv = (CAPT_DIR+'/preventive_maintenance.docx')
+		dst_mv = (RESULT_DIR+'/preventive_maintenance.docx')
+		shutil.move(src_mv,dst_mv)
+		os.remove("pmdb")
+		yield f"data:Document has been saved to preventive_maintenance.docx\n\n"
+		yield f"data:Finished\n\n" 
+	#return redirect('/report/result')
+	return Response(report_generate_detail(), mimetype='text/event-stream')
 
 @app.route('/report/result')
 @login_required

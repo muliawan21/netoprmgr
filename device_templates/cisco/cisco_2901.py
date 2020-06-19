@@ -221,7 +221,7 @@ class cisco_2901:
             read_file_list_env.append(line)
             if read_file_logic_check == True and 'show' in line:
                 break
-            if 'show env' in line and '%' not in read_file_list[count_read_file+1] and '%' not in read_file_list[count_read_file+2]:
+            if 'show env' in line and '%' not in read_file_list[count_read_file+1] and 'show env' in line and '%' not in read_file_list[count_read_file+1] and '%' not in read_file_list[count_read_file+2] and '!' not in read_file_list[count_read_file+1]:
                 read_file_logic_check = True
             count_read_file+=1
 
@@ -340,6 +340,18 @@ class cisco_2901:
             for fan in list_fan:
                 cursor.execute('''INSERT INTO envtable(devicename, system, item, status)
                         VALUES(?,?,?,?)''', (self.file+'-'+'error','Fan',self.file+'-'+'error',self.file+'-'+'error',))
+                count_sql+=1
+        try:
+            count_sql = 0
+            for temp in list_temp:
+                cursor.execute('''INSERT INTO envtable(devicename, system, item, status)
+                        VALUES(?,?,?,?)''', (devicename,'Temperature',temp,list_temp_cond[count_sql],))
+                count_sql+=1
+        except:
+            count_sql = 0
+            for temp in list_temp:
+                cursor.execute('''INSERT INTO envtable(devicename, system, item, status)
+                        VALUES(?,?,?,?)''', (self.file+'-'+'error','Temperature',self.file+'-'+'error',self.file+'-'+'error',))
                 count_sql+=1
        #LOG Checking
         try:

@@ -125,47 +125,7 @@ class cisco_ASA5505:
         #print(memory_top_three)
 
         #sorting cpu
-        list_cpu = []
-        list_cpu_sorted = []
-        cpu_sorted_break = False
-        cpu_sorted_add_list = False
-        for line in read_file_list:
-            #make conditional statement to let program start append to list, and get ready to break loop
-            if re.findall('.*PID\s+Runtime\S+\s+Invoked\s+uSecs\s+5Sec\s+1Min\s+5Min\s+TTY\s+Process',line):
-                cpu_sorted_break = True
-                cpu_sorted_add_list = True
-            #append value to list
-            if cpu_sorted_break == True:
-                if re.findall('.*PID\s+Runtime\S+\s+Invoked\s+uSecs\s+5Sec\s+1Min\s+5Min\s+TTY\s+Process',line):
-                    pass
-                else:
-                    list_cpu.append(line)
-            #break loop
-            if cpu_sorted_break == True and re.findall('.*#',line):
-                break
-            elif cpu_sorted_break == True and re.findall('^\s*$',line):
-                break
-        #create new list that only contain cpu allocated and name application that using it
-        for i in list_cpu:
-            try:
-                
-                
-                sort_digit = re.findall('\d+\s+\d+\s+\d+\s+\d+\s+(\d+[.]\d+).*\d+[.]\d+.*\d+[.]\d+.*\d+\s+.*',i)
-                sort_text =  re.findall('\d+\s+\d+\s+\d+\s+\d+\s+\d+[.]\d+.*\d+[.]\d+.*\d+[.]\d+.*\d+\s+(.*)',i)
-                list_cpu_sorted.append(sort_digit[0]+' '+sort_text[0])
-            except:
-                pass
-        try:
-            #sort cpu with allocated as key
-            list_cpu_sorted.sort(reverse=True,key = lambda x: float(x.split()[0]))
-            #print('cpu Top Three')
-            topcpu1 = re.findall('\d+\s+(.*)',list_cpu_sorted[0])
-            topcpu2 = re.findall('\d+\s+(.*)',list_cpu_sorted[1])
-            topcpu3 = re.findall('\d+\s+(.*)',list_cpu_sorted[2])
-            topcpu = (topcpu1[0]+'\n'+topcpu2[0]+'\n'+topcpu3[0])
-            #print(cpu_top_three)
-        except:
-            pass
+        topcpu = '-'
         
         read_file_list_env  = []
         read_file_logic_check = False
@@ -174,7 +134,7 @@ class cisco_ASA5505:
             read_file_list_env.append(line)
             if read_file_logic_check == True and 'show' in line:
                 break
-            if 'show env' in line and '%' not in read_file_list[count_read_file+1] and '%' not in read_file_list[count_read_file+2]:
+            if 'show env' in line and '%' not in read_file_list[count_read_file+1] and 'show env' in line and '%' not in read_file_list[count_read_file+1] and '%' not in read_file_list[count_read_file+2] and '!' not in read_file_list[count_read_file+1]:
                 read_file_logic_check = True
             count_read_file+=1
 

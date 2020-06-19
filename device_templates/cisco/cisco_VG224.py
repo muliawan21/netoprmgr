@@ -3,7 +3,7 @@ import re
 
 
 
-class cisco_ASR902:
+class cisco_VG224:
     def __init__(self,file):
         #variable constructor
         self.file = file
@@ -19,8 +19,8 @@ class cisco_ASR902:
                 break
         for line in read_file_list:
             #get device model
-            if re.findall('.*isco\s+(\S+).*processor.*bytes.*memory',line):
-                model = re.findall('.*isco\s+(\S+).*processor.*bytes.*memory',line)
+            if re.findall('.*isco\s+(\S+).*with.*bytes',line):
+                model = re.findall('.*isco\s+(\S+).*with.*bytes',line)
                 model = model[0]
                 break                
         for line in read_file_list:
@@ -43,8 +43,8 @@ class cisco_ASR902:
                 break
         for line in read_file_list:
             #SOFTWARE TABLE SUMMARY
-            if re.findall('^.*Cisco IOS .*,\s+Version\s+(.*)',line):
-                version = re.findall('^.*Cisco IOS .*,\s+Version\s+(.*)',line)
+            if re.findall('^.*Version (.*),',line):
+                version = re.findall('^.*Version (.*),',line)
                 version = version[0]
                 break
         
@@ -74,18 +74,19 @@ class cisco_ASR902:
             if hardware_break == True and re.findall('.*#',line):
                 break
         
+        cpu_break = False
         for line in read_file_list:
             #CPU
             #cpu
-            if re.findall('.*CPU utilization for five seconds:\s+(\d+)\S+\d+',line):
+            if re.findall('^CPU utilization for five seconds: (.*)%\/.*%;.*;',line):
                 cpu_break = True
-                total = re.findall('.*CPU utilization for five seconds:\s+(\d+)\S+\d+',line)
+                total = re.findall('^CPU utilization for five seconds: (.*)%\/.*%;.*;',line)
                 total = int(total[0])
                 #print('cpu')
                 #print(cpu)
             #cpu interrupt
-            if re.findall('.*CPU utilization for five seconds:\s+\d+\S+(\d+)',line):
-                interrupt = re.findall('.*CPU utilization for five seconds:\s+\d+\S+(\d+)',line)
+            if re.findall('^CPU utilization for five seconds: .*\/(.*)%;.*;',line):
+                interrupt = re.findall('^CPU utilization for five seconds: .*\/(.*)%;.*;',line)
                 interrupt = interrupt[0]
                 #cpu total
                 process = int(total) - int(interrupt)
@@ -97,33 +98,36 @@ class cisco_ASR902:
                 else:
                     status='High'
                 total=str(total)
+            #break loop
+            if cpu_break == True and re.findall('.*#',line):
+                break
         
         memory_break = False
         for line in read_file_list:
             #MEMORY
             #Memory Total
-            if re.findall('^Processor Pool Total:\s+(\d+)',line):
+            if re.findall('^Processor Pool Total:(.*)Used:.*Free:.*',line):
                 memory_break = True
-                memory_total = re.findall('^Processor Pool Total:\s+(\d+)',line)
+                memory_total = re.findall('^Processor Pool Total:(.*)Used:.*Free:.*',line)
                 memory_total = memory_total[0]
             #Memory Used
-            if re.findall('^Processor Pool Total:\s+\d+\s+Used:\s+(\d+)',line):
-                memory_used = re.findall('^Processor Pool Total:\s+\d+\s+Used:\s+(\d+)',line)
+            if re.findall('^Processor Pool Total:.*Used:(.*)Free:.*',line):
+                memory_used = re.findall('^Processor Pool Total:.*Used:(.*)Free:.*',line)
                 memory_used = memory_used[0]
-
-        #memory percentage
-        memory_percentage = (int(memory_used)/int(memory_total))*100
-        #memory status
-        if float(memory_percentage)<21 :
-            memory_status='Low'
-        elif float(memory_percentage)<81 :
-            memory_status='Medium'
-        else:
-            memory_status='High'
-        memory_percentage=re.findall('(^.{5})*',str(memory_percentage))
-        utils=memory_percentage[0]
-
-
+                #memory percentage
+                memory_percentage = (int(memory_used)/int(memory_total))*100
+                #memory status
+                if float(memory_percentage)<21 :
+                    memory_status='Low'
+                elif float(memory_percentage)<81 :
+                    memory_status='Medium'
+                else:
+                    memory_status='High'
+                memory_percentage=re.findall('(^.{5})*',str(memory_percentage))
+                utils=memory_percentage[0]
+            #break loop
+            if memory_break == True and re.findall('.*#',line):
+                break
         #sorting memory
         list_memory = []
         list_memory_sorted = []
@@ -166,7 +170,6 @@ class cisco_ASR902:
             #print(memory_top_three)
         except:
             pass
-
 
         #sorting cpu
         list_cpu = []
@@ -234,37 +237,41 @@ class cisco_ASR902:
         psu_line_end = 0
         count_line=0
         for i in read_file_list_env:
-            if re.findall('^\s+(Fan\s+\d+)\s+\S+',i):
-                regex_fan = re.findall('^\s+(Fan\s+\d+)\s+\S+',i)
+            if re.findall('^.*(Fan)\s+status:',i):
+                regex_fan = re.findall('^.*(Fan)\s+status:',i)
                 fan = regex_fan[0]
                 list_fan.append(fan)
                 #print(fan)
-            if re.findall('^\s+Fan\s+\d+\s+(\S+),', i):
-                regex_fan_cond = re.findall('^\s+Fan\s+\d+\s+(\S+),', i)
-                fan_cond = regex_fan_cond[0]
+            if 'Fan status:' in i:
+                fan_cond = read_file_list_env[count_line+2]
+                fan_cond = re.findall('^\s+(.*).', fan_cond)
+                fan_cond = fan_cond[0]
                 list_fan_cond_cp.append(fan_cond)
-                #print(fan_cond)
-            if re.findall('^.*(Temp:.*)\s+\s+\s+\s+\s+R0.*Normal',i):
-                regex_temp = re.findall('^.*(Temp:.*)\s+\s+\s+\s+\s+R0.*Normal',i)
+                #tulis = input(fan_cond)
+            if re.findall('^.*Board\s+(Temperature):',i):
+                regex_temp = re.findall('^.*Board\s+(Temperature):',i)
                 temp = regex_temp[0]
                 list_temp.append(temp)
-                #print(temp)
-            if re.findall('^.*Temp:.*\s+\s+\s+\s+\s+R0.*(Normal)', i):
-                regex_temp_cond = re.findall('^.*Temp:.*\s+\s+\s+\s+\s+R0.*(Normal)', i)
-                temp_cond = regex_temp_cond[0]
+                #tulis = input(temp)
+            if 'Board Temperature:' in i:
+                temp_cond = read_file_list_env[count_line+2]
+                temp_cond = re.findall('^\s+(.*).', temp_cond)
+                temp_cond = temp_cond[0]
                 list_temp_cond.append(temp_cond)
-                #print(temp_cond)
-            if re.findall('^(.*Power Supply\s+\S+\s+\S+).*Status:\s+\S+',i):
-                regex_psu = re.findall('^(.*Power Supply\s+\S+\s+\S+).*Status:\s+\S+',i)
-                psu = regex_psu[0]
+                #tulis = input(temp_cond)
+            if 'Misc. status:' in i:
+                psu = read_file_list_env[count_line+2]
+                psu = re.findall('^.*\s+Main\s+(Power Supply)\s.*.', psu)
+                psu = psu[0]
                 list_psu.append(psu)
-                #print(temp)
-            if re.findall('^.*Power Supply\s+\S+\s+\S+.*Status:\s+(\S+)', i):
-                regex_psu_cond = re.findall('^.*Power Supply\s+\S+\s+\S+.*Status:\s+(\S+)', i)
-                psu_cond = regex_psu_cond[0]
+                #tulis = input(psu)
+            if 'Misc. status:' in i:
+                psu_cond = read_file_list_env[count_line+2]
+                psu_cond = re.findall('^.*\s+Main\s+Power Supply\s(.*).', psu_cond)
+                psu_cond = psu_cond[0]
                 list_psu_cond.append(psu_cond)
-                #print(temp_cond)
-
+                #tulis = input(psu_cond)
+            count_line+=1
         #open db connection
         db = sqlite3.connect('pmdb')
         cursor = db.cursor()
@@ -359,3 +366,5 @@ class cisco_ASR902:
                     VALUES(?,?,?)''', (self.file+'-'+'error', self.file+'-'+'error',self.file+'-'+'error',))
         db.commit()             
         db.close()
+        
+        
