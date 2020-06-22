@@ -87,6 +87,7 @@ from netoprmgr.device_templates.cisco.cisco_N9K_C9508 import cisco_N9K_C9508
 from netoprmgr.device_templates.cisco.cisco_VG224 import cisco_VG224
 from netoprmgr.device_templates.cisco.cisco_N77_C7706 import cisco_N77_C7706
 from netoprmgr.device_templates.cisco.cisco_N5K_C5596T import cisco_N5K_C5596T
+from netoprmgr.device_templates.cisco.cisco_N3K_C3172TQ import cisco_N3K_C3172TQ
 
 class file_identification:
     def __init__(self,file):
@@ -543,6 +544,11 @@ class file_identification:
                     elif re.findall('.*PID:.*C7706',i):
                         print('Executing with N77-C7706')
                         cisco_N77_C7706(self.file)
+                        xcek='disable'
+                        break
+                    elif re.findall('.*PID:.*C3172TQ',i):
+                        print('Executing with N3K-C3172TQ')
+                        cisco_N3K_C3172TQ(self.file)
                         xcek='disable'
                         break
                     else:
