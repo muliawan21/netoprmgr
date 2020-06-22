@@ -3,7 +3,7 @@ import re
 
 
 
-class cisco_N77_C7706:
+class cisco_N5K_C5596T:
     def __init__(self,file):
         #variable constructor
         self.file = file
@@ -19,8 +19,8 @@ class cisco_N77_C7706:
                 break
         for line in read_file_list:
             #get device model
-            if re.findall('^.*cisco Nexus\d+\s+(\S+\d+)',line):
-                model = re.findall('^.*cisco Nexus\d+\s+(\S+\d+)',line)
+            if re.findall('.*PID:.*N5K-(\S\d\d\d\d\S)',line):
+                model = re.findall('.*PID:.*N5K-(\S\d\d\d\d\S)',line)
                 model = model[0]
                 break                
         for line in read_file_list:
@@ -41,8 +41,8 @@ class cisco_N77_C7706:
 
         for line in read_file_list:
             #SOFTWARE TABLE SUMMARY
-            if re.findall('^.*system:\s+version\s+(\d+.\d+\S+)',line):
-                version = re.findall('^.*system:\s+version\s+(\d+.\d+\S+)',line)
+            if re.findall('^.*System\s+version:\s+(\d+.\d+\S+)',l`ine):
+                version = re.findall('^.*System\s+version:\s+(\d+.\d+\S+)',line)
                 version = version[0]
                 break
         
