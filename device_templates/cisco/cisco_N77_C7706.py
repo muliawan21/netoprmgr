@@ -237,29 +237,29 @@ class cisco_N77_C7706:
         psu_line_end = 0
         count_line=0
         for i in read_file_list_env:
-            if re.findall('^(Fan\d\S+)\s+N77-C7706-FAN\s+\d\S\d\s+\S+',i):
-                regex_fan = re.findall('^(Fan\d\S+)\s+N77-C7706-FAN\s+\d\S\d\s+\S+',i)
+            if re.findall('^(Fan1\S+)\s+N77-C7706-FAN\s+\d\S\d\s+\S+',i):
+                regex_fan = re.findall('^(Fan1\S+)\s+N77-C7706-FAN\s+\d\S\d\s+\S+',i)
                 #tulis = input(i)
                 fan = regex_fan[0]
                 list_fan.append(fan)
                 #print(fan)
-            if re.findall('^Fan\d\S+\s+N77-C7706-FAN\s+\d\S\d\s+(\S+)', i):
-                regex_fan_cond = re.findall('^Fan\d\S+\s+N77-C7706-FAN\s+\d\S\d\s+(\S+)', i)
+            if re.findall('^Fan1\S+\s+N77-C7706-FAN\s+\d\S\d\s+(\S+)', i):
+                regex_fan_cond = re.findall('^Fan1\S+\s+N77-C7706-FAN\s+\d\S\d\s+(\S+)', i)
                 fan_cond = regex_fan_cond[0]
                 list_fan_cond_cp.append(fan_cond)
                 #print(fan_cond)
             if re.findall('^.*(CPU\d+CORE\d+\S+)\s+\d+\s+\d+\s+\d+\s+.*',i):
-                regex_temp = re.findall('^.*(CPU\d+CORE\d+\S+)\s+\d+\s+\d+\s+\d+\s+.*',i)
+                regex_temp = re.findall('^.*(CPU\d+CORE\d+\S+\s+\d+\s+\d+\s+\d+\s+(.*)',i)
                 temp = regex_temp[0]
                 list_temp.append(temp)
                 #print(temp)
-            if re.findall('^.*CPU\d+CORE\d+\S+\s+\d+\s+\d+\s+\d+\s+(.*)', i):
-                regex_temp_cond = re.findall('^.*CPU\d+CORE\d+\S+\s+\d+\s+\d+\s+\d+\s+(.*)', i)
+            if re.findall('^.*CPU\d+CORE\d+\S+\s+\d+\s+\d+\s+\d+\s+(\S+)', i):
+                regex_temp_cond = re.findall('^.*CPU\d+CORE\d+\S+\s+\d+\s+\d+\s+\d+\s+(\S+)', i)
                 temp_cond = regex_temp_cond[0]
                 list_temp_cond.append(temp_cond)
                 #print(temp_cond)
-            if re.findall('^.*\d+\s+(N77-AC-3KW)\s+\d+\s+\S+\s+\d+\s+\S+\s+\s+.*',i):
-                regex_psu = re.findall('^.*\d+\s+(N77-AC-3KW)\s+\d+\s+\S+\s+\d+\s+\S+\s+\s+.*',i)
+            if re.findall('^.*(\d+)\s+N77-AC-3KW\s+\d+\s+\S+\s+\d+\s+\S+\s+\s+.*',i):
+                regex_psu = re.findall('^.*(\d+)\s+N77-AC-3KW\s+\d+\s+\S+\s+\d+\s+\S+\s+\s+.*',i)
                 psu = regex_psu[0]
                 list_psu.append(psu)
                 #print(psu)

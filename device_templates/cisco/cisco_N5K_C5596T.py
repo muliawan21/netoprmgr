@@ -244,8 +244,8 @@ class cisco_N5K_C5596T:
                 fan = regex_fan[0]
                 list_fan.append(fan)
                 #print(fan)
-            if re.findall('^\S+\s+N5596UP-FAN-B\s+\S+\s+().*)', i):
-                regex_fan_cond = re.findall('^\S+\s+N5596UP-FAN-B\s+\S+\s+().*)', i)
+            if re.findall('^\S+\s+N5596UP-FAN-B\s+\S+\s+(.*)', i):
+                regex_fan_cond = re.findall('^\S+\s+N5596UP-FAN-B\s+\S+\s+(.*)', i)
                 fan_cond = regex_fan_cond[0]
                 list_fan_cond_cp.append(fan_cond)
                 #print(fan_cond)
