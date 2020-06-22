@@ -2,7 +2,7 @@ import sqlite3
 import re
 
 
- 
+
 class cisco_N5K_C5596T:
     def __init__(self,file):
         #variable constructor
@@ -41,7 +41,7 @@ class cisco_N5K_C5596T:
 
         for line in read_file_list:
             #SOFTWARE TABLE SUMMARY
-            if re.findall('^.*System\s+version:\s+(\d+.\d+\S+)',l`ine):
+            if re.findall('^.*System\s+version:\s+(\d+.\d+\S+)',line):
                 version = re.findall('^.*System\s+version:\s+(\d+.\d+\S+)',line)
                 version = version[0]
                 break
@@ -76,17 +76,18 @@ class cisco_N5K_C5596T:
         for line in read_file_list:
             #CPU
             #cpu
-            if re.findall('^CPU util\s+:\s+(.*)%\s+user',line):
+            if re.findall('^CPU util\s+:\s+(\d+)\S\d%\s+user',line):
                 cpu_break = True
-                total = re.findall('^CPU util\s+:\s+(.*)%\s+user',line)
+                total = re.findall('^CPU util\s+:\s+(\d+)\S\d%\s+user',line)
                 total = int(total[0])
                 #print('cpu')
                 #print(cpu)
             #cpu interrupt
             if re.findall('^CPU util\s+:\s+(.*)%\s+user',line):
-                interrupt = re.findall('^CPU util\s+:\s+(.*)%\s+user',line)
-                interrupt = interrupt[0]
+                #interrupt = re.findall('^CPU util\s+:\s+(.*)%\s+user',line)
+                #interrupt = interrupt[0]
                 #cpu total
+                interrupt = 0
                 process = int(total) - int(interrupt)
                 #cpu status
                 if total<21 :
@@ -180,7 +181,7 @@ class cisco_N5K_C5596T:
             #make conditional statement to let program start append to list, and get ready to break loop
             if re.findall('PID\s+Runtime\Sms\S\s+Invoked\s+uSecs\s+1Sec\s+Process',line):
                 cpu_sorted_break = True
-                cpu_sorted_add_list = `True`
+                cpu_sorted_add_list = True
             #append value to list
             if cpu_sorted_break == True:
                 if re.findall('PID\s+Runtime\Sms\S\s+Invoked\s+uSecs\s+1Sec\s+Process',line):
@@ -243,28 +244,28 @@ class cisco_N5K_C5596T:
                 fan = regex_fan[0]
                 list_fan.append(fan)
                 #print(fan)
-            if re.findall('^(\S+)\s+N5596UP-FAN-B\s+\S+\s+.*', i):
-                regex_fan_cond = re.findall('^(\S+)\s+N5596UP-FAN-B\s+\S+\s+.*', i)
+            if re.findall('^\S+\s+N5596UP-FAN-B\s+\S+\s+().*)', i):
+                regex_fan_cond = re.findall('^\S+\s+N5596UP-FAN-B\s+\S+\s+().*)', i)
                 fan_cond = regex_fan_cond[0]
                 list_fan_cond_cp.append(fan_cond)
                 #print(fan_cond)
-            if re.findall('^.*(CPU\d+CORE\d+\S+)\s+\d+\s+\d+\s+\d+\s+.*',i):
-                regex_temp = re.findall('^.*(CPU\d+CORE\d+\S+)\s+\d+\s+\d+\s+\d+\s+.*',i)
+            if re.findall('^\d\s+(\S+)\s+\d+\s+\d+\s+\d+\s+\S+',i):
+                regex_temp = re.findall('^\d\s+(\S+)\s+\d+\s+\d+\s+\d+\s+\S+',i)
                 temp = regex_temp[0]
                 list_temp.append(temp)
                 #print(temp)
-            if re.findall('^.*CPU\d+CORE\d+\S+\s+\d+\s+\d+\s+\d+\s+(.*)', i):
-                regex_temp_cond = re.findall('^.*CPU\d+CORE\d+\S+\s+\d+\s+\d+\s+\d+\s+(.*)', i)
+            if re.findall('^\d\s+\S+\s+\d+\s+\d+\s+\d+\s+(\S+)', i):
+                regex_temp_cond = re.findall('^\d\s+\S+\s+\d+\s+\d+\s+\d+\s+(\S+)', i)
                 temp_cond = regex_temp_cond[0]
                 list_temp_cond.append(temp_cond)
                 #print(temp_cond)
-            if re.findall('^.*(\d)+\s+N77-AC-3KW\s+\d+\s+\S+\s+\d+\s+\S+\s+\s+.*',i):
-                regex_psu = re.findall('^.*(\d)+\s+N77-AC-3KW\s+\d+\s+\S+\s+\d+\s+\S+\s+\s+.*',i)
+            if re.findall('^\d\s+(\S+)\s+\S+\s+\S+\s+\S+\s+\S+',i):
+                regex_psu = re.findall('^\d\s+(\S+)\s+\S+\s+\S+\s+\S+\s+\S+',i)
                 psu = regex_psu[0]
                 list_psu.append(psu)
                 #print(psu)
-            if re.findall('^.*\d+\s+N77-AC-3KW\s+\d+\s+\S+\s+\d+\s+\S+\s+\s+(.*)', i):
-                regex_psu_cond = re.findall('^.*\d+\s+N77-AC-3KW\s+\d+\s+\S+\s+\d+\s+\S+\s+\s+(.*)', i)
+            if re.findall('^\d\s+\S+\s+\S+\s+\S+\s+\S+\s+(\S+)', i):
+                regex_psu_cond = re.findall('^\d\s+\S+\s+\S+\s+\S+\s+\S+\s+(\S+)', i)
                 psu_cond = regex_psu_cond[0]
                 list_psu_cond.append(psu_cond)
                 #print(psu_cond)

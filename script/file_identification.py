@@ -535,9 +535,9 @@ class file_identification:
                         cisco_VG224(self.file)
                         xcek='disable'
                         break
-                    elif re.findall('.*PID:.*N5K-C5596T',i):
+                    elif re.findall('.*PID:.*C5596T',i):
                         print('Executing with N5K-C5596T')
-                        cisco_N5K_C(self.file)
+                        cisco_N5K_C5596T(self.file)
                         xcek='disable'
                         break
                     elif re.findall('.*PID:.*C7706',i):
