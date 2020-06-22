@@ -244,7 +244,7 @@ class cisco_N77_C7706:
                 list_fan.append(fan)
                 #print(fan)
             if re.findall('^.*Fan1.*\s+N77-\S+\s+\d+.\d+\s+(.*)', i):
-                regex_fan_cond = re.findall('^.*Fan1.*\s+N7K-\S+\s+\d+.\d+\s+(.*)', i)
+                regex_fan_cond = re.findall('^.*Fan1.*\s+N77-\S+\s+\d+.\d+\s+(.*)', i)
                 fan_cond = regex_fan_cond[0]
                 list_fan_cond_cp.append(fan_cond)
                 #print(fan_cond)

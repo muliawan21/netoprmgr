@@ -2,7 +2,7 @@ import sqlite3
 import re
 
 
-
+ 
 class cisco_N5K_C5596T:
     def __init__(self,file):
         #variable constructor
@@ -76,15 +76,15 @@ class cisco_N5K_C5596T:
         for line in read_file_list:
             #CPU
             #cpu
-            if re.findall('^CPU utilization for five seconds: (.*)%\/.*%;.*;',line):
+            if re.findall('^CPU util\s+:\s+(.*)%\s+user',line):
                 cpu_break = True
-                total = re.findall('^CPU utilization for five seconds: (.*)%\/.*%;.*;',line)
+                total = re.findall('^CPU util\s+:\s+(.*)%\s+user',line)
                 total = int(total[0])
                 #print('cpu')
                 #print(cpu)
             #cpu interrupt
-            if re.findall('^CPU utilization for five seconds: .*\/(.*)%;.*;',line):
-                interrupt = re.findall('^CPU utilization for five seconds: .*\/(.*)%;.*;',line)
+            if re.findall('^CPU util\s+:\s+(.*)%\s+user',line):
+                interrupt = re.findall('^CPU util\s+:\s+(.*)%\s+user',line)
                 interrupt = interrupt[0]
                 #cpu total
                 process = int(total) - int(interrupt)
@@ -135,12 +135,12 @@ class cisco_N5K_C5596T:
         memory_sorted_add_list = False
         for line in read_file_list:
             #make conditional statement to let program start append to list, and get ready to break loop
-            if re.findall('.*PID\s+MemAlloc\s+MemLimit\s+MemUsed\s+StackBase\/Ptr\s+Process',line):
+            if re.findall('PID\s+MemAlloc\s+MemLimit\s+StkSize\s+RSSMem\s+LibMem\s+StackBase\SPtr\s+Process',line):
                 memory_sorted_break = True
                 memory_sorted_add_list = True
             #append value to list
             if memory_sorted_break == True:
-                if re.findall('.*PID\s+MemAlloc\s+MemLimit\s+MemUsed\s+StackBase\/Ptr\s+Process',line):
+                if re.findall('PID\s+MemAlloc\s+MemLimit\s+StkSize\s+RSSMem\s+LibMem\s+StackBase\SPtr\s+Process',line):
                     pass
                 else:
                     list_memory.append(line)
@@ -154,8 +154,8 @@ class cisco_N5K_C5596T:
             try:
                 
                 
-                sort_digit = re.findall('\d+\s+\d+\s+\d+\s+(\d+)\s+\S+\/\S+\s+.*',i)
-                sort_text =  re.findall('\d+\s+\d+\s+\d+\s+\d+\s+\S+\/\S+\s+(.*)',i)
+                sort_digit = re.findall('\s+1\s+(\d+)\s+0\s+86016\s+675840\s+1732608\s+\S+\s+.*',i)
+                sort_text =  re.findall('\s+1\s+\d+\s+0\s+86016\s+675840\s+1732608\s+\S+\s+(.*)',i)
                 list_memory_sorted.append(sort_digit[0]+' '+sort_text[0])
             except:
                 pass
@@ -163,9 +163,9 @@ class cisco_N5K_C5596T:
             #sort memory with allocated as key
             list_memory_sorted.sort(reverse=True,key = lambda x: int(x.split()[0]))
             #print('Memory Top Three')
-            topproc1 = re.findall('\d+\s+(.*)',list_memory_sorted[0])
-            topproc2 = re.findall('\d+\s+(.*)',list_memory_sorted[1])
-            topproc3 = re.findall('\d+\s+(.*)',list_memory_sorted[2])
+            topproc1 = re.findall('\d+\s+(\d+).*',list_memory_sorted[0])
+            topproc2 = re.findall('\d+\s+(\d+).*',list_memory_sorted[1])
+            topproc3 = re.findall('\d+\s+(\d+).*',list_memory_sorted[2])
             topproc = (topproc1[0]+'\n'+topproc2[0]+'\n'+topproc3[0])
             #print(memory_top_three)
         except:
@@ -178,12 +178,12 @@ class cisco_N5K_C5596T:
         cpu_sorted_add_list = False
         for line in read_file_list:
             #make conditional statement to let program start append to list, and get ready to break loop
-            if re.findall('.*PID\s+Runtime\S+\s+Invoked\s+uSecs\s+5Sec\s+1Min\s+5Min\s+TTY\s+Process',line):
+            if re.findall('PID\s+Runtime\Sms\S\s+Invoked\s+uSecs\s+1Sec\s+Process',line):
                 cpu_sorted_break = True
-                cpu_sorted_add_list = True
+                cpu_sorted_add_list = `True`
             #append value to list
             if cpu_sorted_break == True:
-                if re.findall('.*PID\s+Runtime\S+\s+Invoked\s+uSecs\s+5Sec\s+1Min\s+5Min\s+TTY\s+Process',line):
+                if re.findall('PID\s+Runtime\Sms\S\s+Invoked\s+uSecs\s+1Sec\s+Process',line):
                     pass
                 else:
                     list_cpu.append(line)
@@ -197,8 +197,8 @@ class cisco_N5K_C5596T:
             try:
                 
                 
-                sort_digit = re.findall('\d+\s+\d+\s+\d+\s+\d+\s+(\d+.\d+)%\s+\S+\s+\S+\s+-\s+.*',i)
-                sort_text =  re.findall('\d+\s+\d+\s+\d+\s+\d+\s+\d+.\d+%\s+\S+\s+\S+\s+-\s+(.*)',i)
+                sort_digit = re.findall('\d\s+\d+\s+\d+\s+\d+\s+(\d\S\d)%\s+.*',i)
+                sort_text =  re.findall('\d\s+\d+\s+\d+\s+\d+\s+\d\S\d%\s+(.*)',i)
                 list_cpu_sorted.append(sort_digit[0]+' '+sort_text[0])
             except:
                 pass
@@ -206,9 +206,9 @@ class cisco_N5K_C5596T:
             #sort cpu with allocated as key
             list_cpu_sorted.sort(reverse=True,key = lambda x: float(x.split()[0]))
             #print('cpu Top Three')
-            topcpu1 = re.findall('\d+\s+(.*)',list_cpu_sorted[0])
-            topcpu2 = re.findall('\d+\s+(.*)',list_cpu_sorted[1])
-            topcpu3 = re.findall('\d+\s+(.*)',list_cpu_sorted[2])
+            topcpu1 = re.findall('\d+\s+(\d+).*',list_cpu_sorted[0])
+            topcpu2 = re.findall('\d+\s+(\d+).*',list_cpu_sorted[1])
+            topcpu3 = re.findall('\d+\s+(\d+).*',list_cpu_sorted[2])
             topcpu = (topcpu1[0]+'\n'+topcpu2[0]+'\n'+topcpu3[0])
             #print(cpu_top_three)
         except:
@@ -237,14 +237,14 @@ class cisco_N5K_C5596T:
         psu_line_end = 0
         count_line=0
         for i in read_file_list_env:
-            if re.findall('^.*(Fan1.*)\s+N77-\S+\s+\d+.\d+\s+.*',i):
-                regex_fan = re.findall('^.*(Fan1.*)\s+N77-\S+\s+\d+.\d+\s+.*',i)
+            if re.findall('^(\S+)\s+N5596UP-FAN-B\s+\S+\s+.*',i):
+                regex_fan = re.findall('^(\S+)\s+N5596UP-FAN-B\s+\S+\s+.*',i)
                 #tulis = input(i)
                 fan = regex_fan[0]
                 list_fan.append(fan)
                 #print(fan)
-            if re.findall('^.*Fan1.*\s+N77-\S+\s+\d+.\d+\s+(.*)', i):
-                regex_fan_cond = re.findall('^.*Fan1.*\s+N7K-\S+\s+\d+.\d+\s+(.*)', i)
+            if re.findall('^(\S+)\s+N5596UP-FAN-B\s+\S+\s+.*', i):
+                regex_fan_cond = re.findall('^(\S+)\s+N5596UP-FAN-B\s+\S+\s+.*', i)
                 fan_cond = regex_fan_cond[0]
                 list_fan_cond_cp.append(fan_cond)
                 #print(fan_cond)

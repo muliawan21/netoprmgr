@@ -242,7 +242,7 @@ class cisco_N7K_C7010:
                 #tulis = input(i)
                 fan = regex_fan[0]
                 list_fan.append(fan)
-                #print(fan)
+                #print(fan)^.*(\d+)\s+N7K-\S+-\d+.\d+\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+.*
             if re.findall('^.*Fan1.*\s+N7K-\S+\s+\d+.\d+\s+(.*)', i):
                 regex_fan_cond = re.findall('^.*Fan1.*\s+N7K-\S+\s+\d+.\d+\s+(.*)', i)
                 fan_cond = regex_fan_cond[0]
